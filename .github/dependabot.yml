@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/" # Location of package.json
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "deps"
+    allow:
+      - dependency-type: "all"
+    open-pull-requests-limit: 10
+    # Optionally, you can ignore some dependencies or update config
