@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import Header from "./components/Header";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -55,6 +56,7 @@ export default function RootLayout({
       <body className={poppins.className}>
         <Header />
         {children}
+        <WhatsAppButton />
         <Toaster 
           position="top-right"
           expand={false}
