@@ -1,0 +1,49 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is an admin
+    function isAdmin() {
+      return request.auth != null && 
+             firestore.exists(/databases/(default)/documents/admin_users/$(request.auth.uid)) &&
+             firestore.get(/databases/(default)/documents/admin_users/$(request.auth.uid)).data.active == true;
+    }
+    
+    // Product images
+    match /products/{allPaths=**} {
+      allow read: if true; // Public can view product images
+      allow write: if isAdmin() && 
+                   request.resource.size < 5 * 1024 * 1024 && // 5MB max
+                   request.resource.contentType.matches('image/.*');
+    }
+    
+    // Media library
+    match /media/{allPaths=**} {
+      allow read: if true; // Public can view media
+      allow write: if isAdmin() && 
+                   request.resource.size < 10 * 1024 * 1024; // 10MB max
+    }
+    
+    // Content images (homepage, pages, etc.)
+    match /content/{allPaths=**} {
+      allow read: if true; // Public can view content images
+      allow write: if isAdmin() && 
+                   request.resource.size < 10 * 1024 * 1024; // 10MB max
+    }
+    
+    // Category images
+    match /categories/{allPaths=**} {
+      allow read: if true; // Public can view category images
+      allow write: if isAdmin() && 
+                   request.resource.size < 5 * 1024 * 1024 && // 5MB max
+                   request.resource.contentType.matches('image/.*');
+    }
+    
+    // Site assets (logos, favicons, etc.)
+    match /site/{allPaths=**} {
+      allow read: if true; // Public can view site assets
+      allow write: if isAdmin() && 
+                   request.resource.size < 5 * 1024 * 1024; // 5MB max
+    }
+  }
+}
