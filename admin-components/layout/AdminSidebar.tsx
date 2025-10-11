@@ -9,7 +9,7 @@ import {
   Package,
   FolderTree,
   FileText,
-  ShoppingCart,
+  MessageSquare,
   Video,
   Settings,
   BarChart3,
@@ -102,9 +102,9 @@ const navItems: NavItem[] = [
     icon: Video,
   },
   {
-    title: "Orders",
-    href: "/admin/orders",
-    icon: ShoppingCart,
+    title: "Messages",
+    href: "/admin/messages",
+    icon: MessageSquare,
   },
   {
     title: "Analytics",
