@@ -3,7 +3,7 @@
 import { memo } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import type { Category } from "./header-config";
+import type { Category } from "./header-types";
 
 interface CategoryLinkProps {
   category: Category;
