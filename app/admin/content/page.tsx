@@ -2,14 +2,14 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Layout, HelpCircle, ArrowRight } from "lucide-react";
+import { FileText, Layout, HelpCircle, ArrowRight, Phone } from "lucide-react";
 import Link from "next/link";
 
 export default function ContentPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold bg-black bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           Content Management
         </h1>
         <p className="text-gray-600 mt-1">
@@ -17,7 +17,7 @@ export default function ContentPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
           <CardHeader>
             <CardTitle className="flex items-center text-gray-900">
@@ -89,85 +89,32 @@ export default function ContentPage() {
             </Link>
           </CardContent>
         </Card>
+
+        <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+          <CardHeader>
+            <CardTitle className="flex items-center text-gray-900">
+              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center mr-3 shadow-sm">
+                <Phone className="h-5 w-5 text-purple-600" />
+              </div>
+              Contact Settings
+            </CardTitle>
+            <CardDescription>
+              Manage contact page information
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <p className="text-sm text-gray-600 mb-4">
+              Configure address, phone numbers, email, hours, and social media
+            </p>
+            <Link href="/admin/content/contact">
+              <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                Manage Contact Info
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
-
-      <Card className="border-0 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b">
-          <CardTitle>Content Management Features</CardTitle>
-          <CardDescription>
-            Current capabilities and upcoming enhancements
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                Active Features
-              </h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex items-start">
-                  <span className="text-green-500 mr-2">✓</span>
-                  <span>FAQ management with categories and publishing</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-500 mr-2">✓</span>
-                  <span>About page markdown editor with toolbar</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-500 mr-2">✓</span>
-                  <span>ImageBB integration for image hosting</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-500 mr-2">✓</span>
-                  <span>Live preview for markdown content</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-500 mr-2">✓</span>
-                  <span>SEO metadata management</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-500 mr-2">✓</span>
-                  <span>Draft and publish workflow</span>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                Coming Soon
-              </h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex items-start">
-                  <span className="text-purple-500 mr-2">○</span>
-                  <span>Drag-and-drop homepage builder</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-500 mr-2">○</span>
-                  <span>Content blocks: Hero, Gallery, Products, CTA</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-500 mr-2">○</span>
-                  <span>Page templates for common layouts</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-500 mr-2">○</span>
-                  <span>Version history and content revisions</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-500 mr-2">○</span>
-                  <span>Blog post management system</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-500 mr-2">○</span>
-                  <span>Multi-language content support</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
