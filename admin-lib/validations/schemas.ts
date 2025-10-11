@@ -93,13 +93,51 @@ export const adminUserSchema = z.object({
 
 export type AdminUserFormData = z.infer<typeof adminUserSchema>;
 
-// Login validation schema
 export const loginSchema = z.object({
   email: z.string().email("Must be a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
+
+export const phoneNumberSchema = z.object({
+  id: z.string(),
+  label: z.string().min(1, "Label is required").max(50, "Label is too long"),
+  number: z.string().min(1, "Phone number is required").max(30, "Number is too long"),
+  primary: z.boolean().default(false),
+});
+
+export const businessHoursSchema = z.object({
+  id: z.string(),
+  day: z.string().min(1, "Day is required"),
+  openTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:MM)"),
+  closeTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:MM)"),
+  closed: z.boolean().default(false),
+});
+
+export const contactSettingsSchema = z.object({
+  addressLine1: z.string().min(1, "Address line 1 is required").max(200, "Address is too long"),
+  addressLine2: z.string().max(200, "Address is too long").optional(),
+  addressLine3: z.string().max(200, "Address is too long").optional(),
+  phoneNumbers: z.array(phoneNumberSchema).min(1, "At least one phone number is required"),
+  email: z.string().email("Must be a valid email"),
+  businessHours: z.array(businessHoursSchema).min(1, "Business hours are required"),
+  socialMedia: z.object({
+    facebook: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+    instagram: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  }),
+});
+
+export type ContactSettingsFormData = z.infer<typeof contactSettingsSchema>;
+
+export const contactMessageSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100, "Name is too long"),
+  email: z.string().email("Must be a valid email"),
+  subject: z.string().min(1, "Subject is required").max(200, "Subject is too long"),
+  message: z.string().min(10, "Message must be at least 10 characters").max(2000, "Message is too long"),
+});
+
+export type ContactMessageFormData = z.infer<typeof contactMessageSchema>;
 
 // Media upload validation
 export const mediaUploadSchema = z.object({

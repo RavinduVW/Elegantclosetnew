@@ -451,18 +451,50 @@ export interface AboutContent {
   updatedBy: string;
 }
 
-export interface AboutContent {
-  id: string;
-  content: string;
-  images: Array<{
-    url: string;
-    alt: string;
-    caption?: string;
-  }>;
-  seoTitle?: string;
-  seoDescription?: string;
-  published: boolean;
-  createdAt: Timestamp;
+export interface ContactSettings {
+  id: "global";
+  addressLine1: string;
+  addressLine2?: string;
+  addressLine3?: string;
+  phoneNumbers: PhoneNumber[];
+  email: string;
+  businessHours: BusinessHours[];
+  socialMedia: {
+    facebook?: string;
+    instagram?: string;
+  };
   updatedAt: Timestamp;
   updatedBy: string;
+}
+
+export interface PhoneNumber {
+  id: string;
+  label: string;
+  number: string;
+  primary: boolean;
+}
+
+export interface BusinessHours {
+  id: string;
+  day: string;
+  openTime: string;
+  closeTime: string;
+  closed: boolean;
+}
+
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: "new" | "read" | "replied" | "archived";
+  priority: "low" | "medium" | "high";
+  tags?: string[];
+  adminNotes?: string;
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
+  readAt?: Timestamp;
+  readBy?: string;
+  repliedAt?: Timestamp;
 }
