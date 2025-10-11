@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, ShoppingBag, User, Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HEADER_CONFIG, MAIN_NAVIGATION, CATEGORIES } from "./header-config";
+import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
+import { db } from "@/backend/config";
+import { HEADER_CONFIG, MAIN_NAVIGATION } from "./header-config";
 import { useScrollPosition, useBodyScrollLock } from "./hooks/useHeader";
+import type { Category } from "./header-types";
 
 const Header = () => {
   const isScrolled = useScrollPosition(HEADER_CONFIG.scrollThreshold);
@@ -15,7 +18,35 @@ const Header = () => {
   const [mobileActiveTab, setMobileActiveTab] = useState<"menu" | "categories">(
     "menu"
   );
+  const [categories, setCategories] = useState<Category[]>([]);
   const pathname = usePathname();
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const categoriesRef = collection(db, "categories");
+      const q = query(
+        categoriesRef,
+        where("status", "==", "active"),
+        where("showInMenu", "==", true),
+        orderBy("order", "asc")
+      );
+      const snapshot = await getDocs(q);
+      const categoriesData = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          name: data.menuLabel || data.name,
+          href: `/${data.slug}`,
+        };
+      });
+      setCategories(categoriesData);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   useBodyScrollLock(isMobileMenuOpen);
 
@@ -144,7 +175,7 @@ const Header = () => {
 
           <div className="hidden lg:block border-t border-gray-200 mt-4 pt-4">
             <nav className="flex items-center justify-center space-x-8">
-              {CATEGORIES.map((category) => (
+              {categories.map((category) => (
                 <Link
                   key={category.name}
                   href={category.href}
@@ -316,7 +347,7 @@ const Header = () => {
                       transition={{ duration: 0.2 }}
                       className="space-y-1"
                     >
-                      {CATEGORIES.map((category) => (
+                      {categories.map((category) => (
                         <Link
                           key={category.name}
                           href={category.href}
