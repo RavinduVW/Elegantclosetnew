@@ -2,6 +2,11 @@ export interface HeaderProps {
   className?: string;
 }
 
+export interface Category {
+  name: string;
+  href: string;
+}
+
 export interface CategoryItem {
   name: string;
   href: string;

@@ -62,13 +62,4 @@ export const MAIN_NAVIGATION = [
   { name: "Contact", href: "/contact" },
 ] as const;
 
-export const CATEGORIES = [
-  { name: "Women", href: "/women" },
-  { name: "Men", href: "/men" },
-  { name: "Kids", href: "/kids" },
-  { name: "Accessories", href: "/accessories" },
-  { name: "Sale", href: "/sale" },
-] as const;
-
 export type MainNavItem = typeof MAIN_NAVIGATION[number];
-export type Category = typeof CATEGORIES[number];
