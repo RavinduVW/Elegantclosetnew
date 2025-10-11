@@ -104,7 +104,7 @@ export default async function AboutPage() {
       </div>
 
       {content.images && content.images.length > 0 && (
-        <div className="relative w-full h-64 md:h-96 bg-gradient-to-br from-purple-100 to-pink-100">
+        <div className="relative w-full h-64 md:h-96 bg-white">
           <Image
             src={content.images[0].url}
             alt={content.images[0].alt || "About us"}
@@ -124,7 +124,7 @@ export default async function AboutPage() {
       )}
 
       {(!content.images || content.images.length === 0) && (
-        <div className="relative w-full h-64 md:h-96 bg-gradient-to-br from-purple-100 to-pink-100">
+        <div className="relative w-full h-64 md:h-96 bg-white">
           <div className="absolute inset-0 flex items-center justify-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900">About us</h1>
           </div>
