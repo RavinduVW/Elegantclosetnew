@@ -56,7 +56,7 @@ export const HEADER_CONFIG = {
 export const MAIN_NAVIGATION = [
   { name: "Home", href: "/" },
   { name: "Shop", href: "/shop" },
-  { name: "Blog", href: "/blog" },
+  //{ name: "Blog", href: "/blog" },
   { name: "About", href: "/about" },
   { name: "FAQ", href: "/faq" },
   { name: "Contact", href: "/contact" },
