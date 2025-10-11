@@ -115,8 +115,22 @@ service cloud.firestore {
     // Admin logs collection
     match /admin_logs/{logId} {
       allow read: if isAdmin() && hasPermission('settings', 'read');
-      allow create: if isAdmin(); // Any admin can create logs
-      allow update, delete: if false; // Logs are immutable
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+    
+    // Contact settings collection
+    match /contact_settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin() && hasPermission('content', 'write');
+    }
+    
+    // Contact messages collection
+    match /contact_messages/{messageId} {
+      allow read: if isAdmin() && hasPermission('content', 'read');
+      allow create: if true;
+      allow update: if isAdmin() && hasPermission('content', 'write');
+      allow delete: if isAdmin() && hasPermission('content', 'admin');
     }
   }
 }
