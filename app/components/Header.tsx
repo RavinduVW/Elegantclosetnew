@@ -138,26 +138,6 @@ const Header = () => {
                 <Search className="w-5 h-5" />
               </motion.button>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="text-gray-600 hover:text-gray-900 transition-colors"
-                aria-label="Account"
-              >
-                <User className="w-5 h-5" />
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative text-gray-600 hover:text-gray-900 transition-colors"
-                aria-label="Shopping bag"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                <span className="absolute -top-2 -right-2 bg-gray-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-                  0
-                </span>
-              </motion.button>
             </div>
 
             <button
@@ -322,20 +302,6 @@ const Header = () => {
                           <span>Search</span>
                         </button>
 
-                        <button className="flex items-center w-full text-left text-gray-600 hover:text-gray-900 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
-                          <User className="w-5 h-5 mr-3" />
-                          <span>Account</span>
-                        </button>
-
-                        <button className="flex items-center justify-between w-full text-left text-gray-600 hover:text-gray-900 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
-                          <div className="flex items-center">
-                            <ShoppingBag className="w-5 h-5 mr-3" />
-                            <span>Shopping Bag</span>
-                          </div>
-                          <span className="bg-gray-900 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-medium">
-                            0
-                          </span>
-                        </button>
                       </div>
                     </motion.div>
                   ) : (
