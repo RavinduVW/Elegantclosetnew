@@ -21,8 +21,29 @@ export const metadata: Metadata = {
     template: "%s | Elegant Closet",
   },
   description:
-    "Discover the artistry of batik at Flegant Closet - Where Fashion Meets Tradition!",
-  keywords: ["elegant closet", "clothing", "fashion"],
+    "Discover the artistry of batik at Elegant Closet - Where Fashion Meets Tradition!",
+  keywords: [
+    "ElegantCloset",
+    "Elegant clothing",
+    "silk sarees",
+    "sarees",
+    "silk batik",
+    "srilankan clothes",
+    "custom sarees",
+    "batik sarees",
+    "modal Silk Sarees",
+    "pure silk sarees",
+    "custom dresses",
+    "frocks",
+    "pantkits",
+    "batik coats",
+    "coats",
+    "tube dress",
+    "beadswork frocks",
+    "beadworks dresses",
+    "sarees with beads",
+    "skirt and blouse",
+  ],
   authors: [{ name: "ElegantCloset" }],
   creator: "ElegantCloset",
   publisher: "ElegantCloset",
@@ -57,7 +78,7 @@ export default function RootLayout({
         <Header />
         {children}
         <WhatsAppButton />
-        <Toaster 
+        <Toaster
           position="top-right"
           expand={false}
           richColors

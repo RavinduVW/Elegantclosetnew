@@ -24,7 +24,16 @@ export default function WhatsAppButton() {
         const contactInfo = docSnap.data() as ContactSettings;
         if (contactInfo.phoneNumbers && contactInfo.phoneNumbers.length > 0) {
           const primaryPhone = contactInfo.phoneNumbers[0].number;
-          const cleanNumber = primaryPhone.replace(/[^0-9]/g, "");
+          let cleanNumber = primaryPhone.replace(/[^0-9+]/g, "");
+          
+          if (cleanNumber.startsWith("+")) {
+            cleanNumber = cleanNumber.substring(1);
+          }
+          
+          if (!cleanNumber.startsWith("94") && cleanNumber.startsWith("0")) {
+            cleanNumber = "94" + cleanNumber.substring(1);
+          }
+          
           setPhoneNumber(cleanNumber);
         }
       }
