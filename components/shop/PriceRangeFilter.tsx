@@ -53,7 +53,7 @@ export default function PriceRangeFilter({
         step={100}
         value={localValue}
         onValueChange={handleSliderChange}
-        className="w-full"
+        className="w-full my-4"
       />
 
       <div className="flex items-center gap-3">

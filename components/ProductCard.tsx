@@ -43,13 +43,13 @@ export default function ProductCard({ product, targetCurrency = "LKR", className
       className={`group relative ${className}`}
     >
       <Link href={`/shop/${product.slug}`} className="block">
-        <div className="relative overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
+        <div className="relative overflow-hidden rounded-xl bg-purple-100 shadow-sm hover:shadow-xl transition-all duration-300 border-2 border-purple-600">
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
             <Image
               src={product.featuredImage || product.images[0]?.url || "/placeholder.jpg"}
               alt={product.name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              className="object-cover transition-transform duration-500 group-hover:scale-110 brightness-90"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               loading="lazy"
             />
@@ -83,7 +83,7 @@ export default function ProductCard({ product, targetCurrency = "LKR", className
 
             {product.featured && !product.isSoldOut && (
               <div className="absolute top-3 right-3 z-20">
-                <Badge variant="outline" className="bg-white/90 backdrop-blur-sm border-purple-200">
+                <Badge variant="outline" className="bg-purple-100/90 backdrop-blur-sm border-purple-200">
                   Featured
                 </Badge>
               </div>
@@ -95,11 +95,7 @@ export default function ProductCard({ product, targetCurrency = "LKR", className
               <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-purple-600 transition-colors">
                 {product.name}
               </h3>
-              {product.shortDescription && (
-                <p className="text-sm text-gray-500 line-clamp-2 mt-1">
-                  {product.shortDescription}
-                </p>
-              )}
+              
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
@@ -108,7 +104,7 @@ export default function ProductCard({ product, targetCurrency = "LKR", className
                 return (
                   <div
                     key={index}
-                    className="w-5 h-5 rounded-full border-2 border-gray-200 shadow-sm"
+                    className="w-5 h-5 rounded-full border-2 border-white shadow-lg"
                     style={{ backgroundColor: colorHex }}
                     title={colorName}
                   />
@@ -130,20 +126,18 @@ export default function ProductCard({ product, targetCurrency = "LKR", className
               )}
             </div>
 
-            <div className="flex items-baseline gap-2 pt-2 border-t border-gray-100">
+            <div className="flex items-baseline gap-2 pt-2 border-t border-purple-200">
               <span className="text-lg font-bold text-gray-900">
                 {formatCurrency(convertedPrice, targetCurrency as any)}
               </span>
               {hasDiscount && (
-                <span className="text-sm text-gray-400 line-through">
+                <span className="text-sm text-red-800 line-through">
                   {formatCurrency(originalConvertedPrice, targetCurrency as any)}
                 </span>
               )}
             </div>
 
-            {product.sku && (
-              <p className="text-xs text-gray-400 font-mono">SKU: {product.sku}</p>
-            )}
+            
           </div>
         </div>
       </Link>
