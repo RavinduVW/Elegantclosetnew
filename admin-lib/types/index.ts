@@ -9,41 +9,40 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
+  markdownDescription?: string;
   shortDescription?: string;
-  sku: string; // 6-digit user-entered code
-  price: number; // Always stored in LKR (base currency)
+  introduction?: string;
+  sku: string;
+  price: number;
   salePrice?: number;
+  discountPercentage?: number;
   compareAtPrice?: number;
   costPrice?: number;
-  currency: string; // Default: 'LKR'
+  currency: string;
 
-  // Inventory
   inStock: boolean;
+  isSoldOut: boolean;
   stockQuantity?: number;
   lowStockThreshold?: number;
   allowBackorder: boolean;
 
-  // Categories & Classification (Clothing-specific)
-  categoryId: string; // Main category
-  subCategoryId?: string; // Sub-category within main category
+  categoryId: string;
+  subCategoryId?: string;
   secondaryCategories?: string[];
   tags: string[];
 
-  // Clothing Attributes
-  colors: string[]; // Array of color names (e.g., ['Red', 'Blue', 'Black'])
-  sizes: string[]; // Array of size codes (e.g., ['S', 'M', 'L', 'XL'])
-  material?: string; // Fabric/material type
+  colors: string[];
+  sizes: string[];
+  customSizes?: string[];
+  material?: string;
   brand?: string;
 
-  // Media (ImageBB hosted)
   images: ProductImage[];
   featuredImage: string;
 
-  // Variants
   hasVariants: boolean;
   variants?: ProductVariant[];
 
-  // Physical Properties
   weight?: number;
   dimensions?: {
     length: number;
@@ -52,23 +51,20 @@ export interface Product {
     unit: "cm" | "in";
   };
 
-  // SEO
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string[];
 
-  // Status & Visibility
   status: "draft" | "published" | "archived";
   featured: boolean;
+  specialTag?: "new" | "trending" | "bestseller" | "limited" | null;
   visibility: "public" | "private" | "password";
 
-  // Metadata
   createdAt: Timestamp;
   updatedAt: Timestamp;
   createdBy: string;
   publishedAt?: Timestamp;
 
-  // Analytics
   viewCount?: number;
   salesCount?: number;
 }

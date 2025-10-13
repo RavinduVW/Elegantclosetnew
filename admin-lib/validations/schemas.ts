@@ -5,7 +5,6 @@ import { z } from "zod";
  * Use with react-hook-form and @hookform/resolvers/zod
  */
 
-// Product validation schema
 export const productSchema = z.object({
   name: z.string().min(1, "Product name is required").max(200, "Name is too long"),
   slug: z
@@ -13,18 +12,29 @@ export const productSchema = z.object({
     .min(1, "Slug is required")
     .regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"),
   description: z.string().min(10, "Description must be at least 10 characters"),
+  markdownDescription: z.string().optional(),
+  introduction: z.string().max(500, "Introduction is too long").optional(),
   shortDescription: z.string().max(300, "Short description is too long").optional(),
   sku: z.string().min(1, "SKU is required").max(50, "SKU is too long"),
   price: z.number().min(0, "Price must be positive"),
   salePrice: z.number().min(0, "Sale price must be positive").optional(),
+  discountPercentage: z.number().min(0).max(100, "Discount must be between 0-100").optional(),
   categoryId: z.string().min(1, "Category is required"),
+  subCategoryId: z.string().optional(),
+  colors: z.array(z.string()).min(1, "At least one color is required"),
+  sizes: z.array(z.string()).min(1, "At least one size is required"),
+  customSizes: z.array(z.string()).optional(),
+  material: z.string().optional(),
+  brand: z.string().optional(),
   tags: z.array(z.string()).optional(),
   inStock: z.boolean().default(true),
+  isSoldOut: z.boolean().default(false),
   stockQuantity: z.number().int().min(0, "Stock quantity must be non-negative").optional(),
   lowStockThreshold: z.number().int().min(0).default(10),
   allowBackorder: z.boolean().default(false),
   status: z.enum(["draft", "published", "archived"]).default("draft"),
   featured: z.boolean().default(false),
+  specialTag: z.enum(["new", "trending", "bestseller", "limited"]).nullable().optional(),
   visibility: z.enum(["public", "private", "password"]).default("public"),
   seoTitle: z.string().max(60, "SEO title is too long").optional(),
   seoDescription: z.string().max(160, "SEO description is too long").optional(),
