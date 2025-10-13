@@ -490,15 +490,15 @@ Please confirm availability and provide payment details. Thank you!`;
             <Separator />
 
             <div className="space-y-3">
-              <Button
+                <Button
                 onClick={handleOrderViaWhatsApp}
                 disabled={product.isSoldOut || !whatsappNumber || isOrderingViaWhatsApp}
-                className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white font-semibold py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                 {isOrderingViaWhatsApp ? (
                   <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Opening WhatsApp...
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Opening WhatsApp...
                   </>
                 ) : product.isSoldOut ? (
                   "Product Sold Out"
@@ -506,11 +506,11 @@ Please confirm availability and provide payment details. Thank you!`;
                   "WhatsApp Not Available"
                 ) : (
                   <>
-                    <IconBrandWhatsapp className="w-6 h-6 mr-2" stroke={2} />
-                    Order via WhatsApp
+                  <IconBrandWhatsapp className="w-6 h-6 mr-2" stroke={2} />
+                  Order via WhatsApp
                   </>
                 )}
-              </Button>
+                </Button>
               
               <p className="text-xs text-center text-gray-500">
                 {!product.isSoldOut && whatsappNumber ? (
