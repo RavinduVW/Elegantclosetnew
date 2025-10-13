@@ -240,11 +240,11 @@ export default function Home() {
         transition={{ duration: 0.6 }}
         className="text-center mb-16"
           >
-        <Badge className="mb-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 px-4 py-2">
+        <Badge className="mb-4 bg-purple-900 text-white border-0 px-4 py-2">
           <Star className="w-4 h-4 mr-2" />
           Featured Products
         </Badge>
-        <h2 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+        <h2 className="text-4xl sm:text-5xl font-bold bg-purple-900 bg-clip-text text-transparent mb-4">
           Discover Our Collection
         </h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -291,7 +291,7 @@ export default function Home() {
         className="text-center mt-12"
           >
         <Link href="/shop">
-          <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-6 rounded-xl font-semibold shadow-lg">
+          <Button size="lg" className="bg-purple-900 text-white px-8 py-6 rounded-xl font-semibold shadow-lg">
             View All Products
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
@@ -434,11 +434,11 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <Badge className="mb-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 px-4 py-2">
+              <Badge className="mb-4 bg-purple-900 text-white border-0 px-4 py-2">
                 <Heart className="w-4 h-4 mr-2" />
                 Style Gallery
               </Badge>
-              <h2 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+              <h2 className="text-4xl sm:text-5xl font-bold bg-purple-900 bg-clip-text text-transparent mb-4">
                 Fashion Inspiration
               </h2>
               <p className="text-gray-600 text-lg">
