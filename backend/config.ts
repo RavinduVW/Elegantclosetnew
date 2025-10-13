@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { getStorage } from "firebase/storage";
 import { getFunctions } from "firebase/functions";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
@@ -18,7 +17,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const storage = getStorage(app);
 const functions = getFunctions(app);
 
 // Initialize analytics only in browser environments
@@ -32,4 +30,8 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export { app, db, auth, storage, functions, firebaseConfig, analytics };
+// NOTE: Firebase Storage is NOT used in this project
+// All images are uploaded to ImageBB (see lib/imagebb.ts)
+// storageBucket config is kept for Firebase initialization only
+
+export { app, db, auth, functions, firebaseConfig, analytics };
