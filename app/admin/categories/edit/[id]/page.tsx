@@ -18,8 +18,8 @@ import {
 import { ArrowLeft, Save, Upload, X } from "lucide-react";
 import Link from "next/link";
 import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "@/backend/config";
+import { db } from "@/backend/config";
+import { uploadToImageBB } from "@/lib/imagebb";
 import { Category } from "@/admin-lib/types";
 import { toast } from "sonner";
 
@@ -112,16 +112,13 @@ export default function EditCategoryPage() {
     if (!imageFile) return undefined;
 
     try {
-      const storageRef = ref(
-        storage,
-        `categories/${Date.now()}_${imageFile.name}`
-      );
-      await uploadBytes(storageRef, imageFile);
-      const url = await getDownloadURL(storageRef);
-      return url;
+      console.log("Uploading category image to ImageBB...");
+      const response = await uploadToImageBB(imageFile, `category-${formData.slug || Date.now()}`);
+      console.log("Image uploaded successfully:", response.data.display_url);
+      return response.data.display_url;
     } catch (error) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
+      toast.error("Failed to upload image to ImageBB");
       return undefined;
     }
   };
