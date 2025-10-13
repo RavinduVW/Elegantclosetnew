@@ -22,8 +22,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, MoreVertical, Edit, Trash2, Eye, Copy } from "lucide-react";
-import toast from "react-hot-toast";
+import { Plus, Search, MoreVertical, Edit, Trash2, Eye, Copy, Sparkles, TrendingUp, Award, Clock } from "lucide-react";
+import { toast } from "sonner";
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -173,6 +173,7 @@ export default function ProductsPage() {
                 <TableHead>SKU</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead>Stock</TableHead>
+                <TableHead>Colors/Sizes</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-[70px]"></TableHead>
               </TableRow>
@@ -204,24 +205,56 @@ export default function ProductsPage() {
                   <TableCell className="font-mono text-sm">{product.sku}</TableCell>
                   <TableCell>
                     <div>
-                      ${product.price.toFixed(2)}
+                      <div className="font-medium">LKR {product.price.toFixed(2)}</div>
                       {product.salePrice && (
-                        <div className="text-sm text-muted-foreground line-through">
-                          ${product.salePrice.toFixed(2)}
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground line-through">
+                            LKR {product.salePrice.toFixed(2)}
+                          </span>
+                          {product.discountPercentage && (
+                            <Badge variant="destructive" className="text-xs">
+                              -{product.discountPercentage}%
+                            </Badge>
+                          )}
                         </div>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
-                    {product.inStock ? (
-                      <span className="text-green-600">
+                    {product.isSoldOut ? (
+                      <Badge variant="destructive">Sold Out</Badge>
+                    ) : product.inStock ? (
+                      <span className="text-green-600 text-sm">
                         {product.stockQuantity || "In Stock"}
                       </span>
                     ) : (
-                      <span className="text-red-600">Out of Stock</span>
+                      <span className="text-red-600 text-sm">Out of Stock</span>
                     )}
                   </TableCell>
-                  <TableCell>{getStatusBadge(product.status)}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs text-muted-foreground">
+                        {product.colors?.length || 0} colors
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {product.sizes?.length || 0} sizes
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col gap-1">
+                      {getStatusBadge(product.status)}
+                      {product.specialTag && (
+                        <Badge variant="outline" className="text-xs w-fit">
+                          {product.specialTag === "new" && <Sparkles className="w-3 h-3 mr-1" />}
+                          {product.specialTag === "trending" && <TrendingUp className="w-3 h-3 mr-1" />}
+                          {product.specialTag === "bestseller" && <Award className="w-3 h-3 mr-1" />}
+                          {product.specialTag === "limited" && <Clock className="w-3 h-3 mr-1" />}
+                          {product.specialTag}
+                        </Badge>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
