@@ -123,7 +123,7 @@ export function HeroGrid({ heroSettings }: { heroSettings: HeroSettings }) {
   const gridImage4 = heroSettings.gridImages.find(img => img.position === 4);
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-purple-50/50 via-pink-50/50 to-white overflow-hidden py-8 sm:py-12 lg:py-0">
+    <section className="relative min-h-screen bg-gradient-to-br from-purple-50/50 via-pink-50/50 to-white overflow-hidden py-8 sm:py-4 lg:py-8">
       <div className="container mx-auto px-4 h-full flex items-center">
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center w-full">
           <motion.div
@@ -144,7 +144,7 @@ export function HeroGrid({ heroSettings }: { heroSettings: HeroSettings }) {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link href={heroSettings.ctaLink || "/shop"}>
-                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg rounded-xl shadow-lg w-full sm:w-auto">
+                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 sm:px-8 py-5 sm:py-6 text-sm sm:text-lg rounded-xl shadow-lg w-full sm:w-auto">
                   <ShoppingBag className="w-5 h-5 mr-2" />
                   {heroSettings.ctaText}
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -152,7 +152,7 @@ export function HeroGrid({ heroSettings }: { heroSettings: HeroSettings }) {
               </Link>
               {heroSettings.secondaryCtaText && (
                 <Link href={heroSettings.secondaryCtaLink || "#"}>
-                  <Button size="lg" variant="outline" className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg rounded-xl w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 px-6 sm:px-8 py-5 sm:py-6 text-sm sm:text-lg rounded-xl w-full sm:w-auto">
                     {heroSettings.secondaryCtaText}
                   </Button>
                 </Link>
