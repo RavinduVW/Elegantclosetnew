@@ -494,3 +494,36 @@ export interface ContactMessage {
   readBy?: string;
   repliedAt?: Timestamp;
 }
+
+export interface HeroSettings {
+  id: "global";
+  activeVersion: "carousel" | "grid";
+  carouselImages: HeroImage[];
+  gridImages: HeroGridImage[];
+  headline: string;
+  subheadline: string;
+  ctaText: string;
+  ctaLink: string;
+  secondaryCtaText?: string;
+  secondaryCtaLink?: string;
+  autoPlayInterval: number;
+  showArrows: boolean;
+  showDots: boolean;
+  updatedAt: Timestamp;
+  updatedBy: string;
+}
+
+export interface HeroImage {
+  id: string;
+  url: string;
+  alt: string;
+  order: number;
+  mobileUrl?: string;
+}
+
+export interface HeroGridImage {
+  id: string;
+  url: string;
+  alt: string;
+  position: 1 | 2 | 3 | 4;
+}

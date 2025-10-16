@@ -132,5 +132,11 @@ service cloud.firestore {
       allow update: if isAdmin() && hasPermission('content', 'write');
       allow delete: if isAdmin() && hasPermission('content', 'admin');
     }
+    
+    // Hero settings collection
+    match /hero_settings/{settingId} {
+      allow read: if true; // Public can read hero settings for homepage
+      allow write: if isAdmin() && hasPermission('content', 'write');
+    }
   }
 }

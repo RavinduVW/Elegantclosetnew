@@ -24,19 +24,22 @@ export default function ContentPage() {
               <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center mr-3 shadow-sm">
                 <Layout className="h-5 w-5 text-purple-600" />
               </div>
-              Homepage
+              Hero Section
             </CardTitle>
             <CardDescription>
-              Edit homepage sections and content
+              Manage homepage hero section versions
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
             <p className="text-sm text-gray-600 mb-4">
-              Customize hero section, featured products, and promotional banners
+              Configure carousel or grid hero layout with images and content
             </p>
-            <Button variant="outline" disabled className="w-full">
-              Coming Soon
-            </Button>
+            <Link href="/admin/content/hero">
+              <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                Manage Hero
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 

@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
-import { collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
+import { collection, query, where, orderBy, limit, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "@/backend/config";
-import { Product } from "@/admin-lib/types";
+import { Product, HeroSettings } from "@/admin-lib/types";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { HeroSections } from "@/components/HeroSections";
 import Link from "next/link";
 import Image from "next/image";
 import { 
@@ -25,6 +26,8 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  const [heroSettings, setHeroSettings] = useState<HeroSettings | null>(null);
+  const [heroLoading, setHeroLoading] = useState(true);
   const [randomProducts, setRandomProducts] = useState<Product[]>([]);
   const [saleProducts, setSaleProducts] = useState<Product[]>([]);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
@@ -44,7 +47,22 @@ export default function Home() {
 
   const smoothY = useSpring(y, { stiffness: 100, damping: 30 });
 
+  const fetchHeroSettings = async () => {
+    try {
+      setHeroLoading(true);
+      const heroDoc = await getDoc(doc(db, "hero_settings", "global"));
+      if (heroDoc.exists()) {
+        setHeroSettings(heroDoc.data() as HeroSettings);
+      }
+    } catch (error) {
+      console.error("Error fetching hero settings:", error);
+    } finally {
+      setHeroLoading(false);
+    }
+  };
+
   useEffect(() => {
+    fetchHeroSettings();
     fetchHomePageData();
   }, []);
 
@@ -108,125 +126,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white overflow-hidden">
-      <section 
-        ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      >
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-600/20 via-transparent to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-pink-600/20 via-transparent to-transparent" />
-          
-          <motion.div
-            style={{ y: smoothY }}
-            className="absolute inset-0"
-          >
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 90, 0],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl"
-            />
-            <motion.div
-              animate={{
-                scale: [1.2, 1, 1.2],
-                rotate: [90, 0, 90],
-              }}
-              transition={{
-                duration: 25,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-pink-500/30 rounded-full blur-3xl"
-            />
-            <motion.div
-              animate={{
-                scale: [1, 1.3, 1],
-                x: [0, 100, 0],
-                y: [0, -50, 0],
-              }}
-              transition={{
-                duration: 15,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-3xl"
-            />
-          </motion.div>
-
-          
-          
-          <div 
-            className="absolute inset-0 opacity-30"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
-        </div>
-
-        <motion.div
-          style={{ opacity, scale }}
-          className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <Badge className="mb-6 bg-white/20 text-purple-600 border-white/30 backdrop-blur-sm px-4 py-2 text-sm">
-              <Sparkles className="w-4 h-4 mr-2" />
-              New Arrivals
-            </Badge>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-purple-700 mb-6 leading-tight"
-          >
-            Elegant Fashion
-            <br />
-            <span className="bg-gradient-to-r from-purple-700 to-purple-900 bg-clip-text text-transparent">
-              Redefined
-            </span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-lg sm:text-xl lg:text-xl text-purple-900 mb-10 max-w-3xl mx-auto"
-          >
-            Discover timeless elegance with our curated collection of premium clothing
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-          >
-            <Link href="/shop">
-              <Button size="lg" className="bg-transparent border border-white text-purple-500 hover:bg-purple-50 hover:text-black font-semibold px-8 py-6 text-md rounded-xl shadow-2xl">
-                <ShoppingBag className="w-5 h-5 mr-2" />
-                Shop Now
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
-            
-          </motion.div>
-
-        
-        </motion.div>
-
-        
-      </section>
+      <HeroSections heroSettings={heroSettings} loading={heroLoading} />
 
       <section className="py-20 bg-gradient-to-b from-white/20 to-purple-50/30 relative">
         <div className="absolute top-0 left-0 w-full h-1">
