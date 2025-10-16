@@ -47,6 +47,7 @@ export function HeroCarousel({ heroSettings }: { heroSettings: HeroSettings }) {
                   alt={image.alt}
                   fill
                   priority={index === 0}
+                  loading={index === 0 ? undefined : "lazy"}
                   className="object-cover"
                   sizes="100vw"
                 />
@@ -190,6 +191,7 @@ export function HeroGrid({ heroSettings }: { heroSettings: HeroSettings }) {
                       src={gridImage2.url}
                       alt={gridImage2.alt}
                       fill
+                      loading="lazy"
                       className="object-cover hover:scale-105 transition-transform duration-500"
                       sizes="(max-width: 768px) 50vw, (max-width: 1024px) 40vw, 25vw"
                     />
@@ -203,6 +205,7 @@ export function HeroGrid({ heroSettings }: { heroSettings: HeroSettings }) {
                       src={gridImage3.url}
                       alt={gridImage3.alt}
                       fill
+                      loading="lazy"
                       className="object-cover hover:scale-105 transition-transform duration-500"
                       sizes="(max-width: 768px) 50vw, (max-width: 1024px) 40vw, 25vw"
                     />
@@ -216,6 +219,7 @@ export function HeroGrid({ heroSettings }: { heroSettings: HeroSettings }) {
                       src={gridImage4.url}
                       alt={gridImage4.alt}
                       fill
+                      loading="lazy"
                       className="object-cover hover:scale-105 transition-transform duration-500"
                       sizes="(max-width: 768px) 50vw, (max-width: 1024px) 40vw, 25vw"
                     />
