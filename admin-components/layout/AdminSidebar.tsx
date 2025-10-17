@@ -106,11 +106,7 @@ const navItems: NavItem[] = [
     href: "/admin/messages",
     icon: MessageSquare,
   },
-  {
-    title: "Analytics",
-    href: "/admin/analytics",
-    icon: BarChart3,
-  },
+  
   {
     title: "Settings",
     href: "/admin/settings",
