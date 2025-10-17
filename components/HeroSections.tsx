@@ -119,8 +119,6 @@ export function HeroCarousel({ heroSettings }: { heroSettings: HeroSettings }) {
 export function HeroGrid({ heroSettings }: { heroSettings: HeroSettings }) {
   const gridImage1 = heroSettings.gridImages.find(img => img.position === 1);
   const gridImage2 = heroSettings.gridImages.find(img => img.position === 2);
-  const gridImage3 = heroSettings.gridImages.find(img => img.position === 3);
-  const gridImage4 = heroSettings.gridImages.find(img => img.position === 4);
 
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-purple-50/50 via-pink-50/50 to-white overflow-hidden py-8 sm:py-4 lg:py-8">
@@ -184,49 +182,21 @@ export function HeroGrid({ heroSettings }: { heroSettings: HeroSettings }) {
                 )}
               </div>
 
-              <div className="flex flex-col gap-3 sm:gap-4 h-full">
-                <div className="relative rounded-xl sm:rounded-2xl overflow-hidden shadow-md sm:shadow-xl h-[calc(33.333%-0.5rem)] sm:h-[calc(33.333%-0.667rem)]">
-                  {gridImage2 ? (
-                    <Image
-                      src={gridImage2.url}
-                      alt={gridImage2.alt}
-                      fill
-                      loading="lazy"
-                      className="object-cover hover:scale-105 transition-transform duration-500"
-                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 40vw, 25vw"
-                    />
-                  ) : (
-                    <div className="bg-gradient-to-br from-pink-200 to-purple-200 h-full" />
-                  )}
-                </div>
-                <div className="relative rounded-xl sm:rounded-2xl overflow-hidden shadow-md sm:shadow-xl h-[calc(33.333%-0.5rem)] sm:h-[calc(33.333%-0.667rem)]">
-                  {gridImage3 ? (
-                    <Image
-                      src={gridImage3.url}
-                      alt={gridImage3.alt}
-                      fill
-                      loading="lazy"
-                      className="object-cover hover:scale-105 transition-transform duration-500"
-                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 40vw, 25vw"
-                    />
-                  ) : (
-                    <div className="bg-gradient-to-br from-purple-200 to-pink-200 h-full" />
-                  )}
-                </div>
-                <div className="relative rounded-xl sm:rounded-2xl overflow-hidden shadow-md sm:shadow-xl h-[calc(33.333%-0.5rem)] sm:h-[calc(33.333%-0.667rem)]">
-                  {gridImage4 ? (
-                    <Image
-                      src={gridImage4.url}
-                      alt={gridImage4.alt}
-                      fill
-                      loading="lazy"
-                      className="object-cover hover:scale-105 transition-transform duration-500"
-                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 40vw, 25vw"
-                    />
-                  ) : (
-                    <div className="bg-gradient-to-br from-pink-200 to-purple-200 h-full" />
-                  )}
-                </div>
+              <div className="relative rounded-xl sm:rounded-2xl overflow-hidden shadow-lg sm:shadow-2xl h-full">
+                {gridImage2 ? (
+                  <Image
+                    src={gridImage2.url}
+                    alt={gridImage2.alt}
+                    fill
+                    loading="lazy"
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 40vw, 25vw"
+                  />
+                ) : (
+                  <div className="bg-gradient-to-br from-pink-200 to-purple-200 h-full flex items-center justify-center">
+                    <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-pink-400" />
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
@@ -252,11 +222,7 @@ export function HeroSkeleton() {
           </div>
           <div className="order-1 lg:order-2 grid grid-cols-2 gap-4 h-[400px] sm:h-[500px] lg:h-[600px]">
             <Skeleton className="rounded-2xl h-full" />
-            <div className="flex flex-col gap-4 h-full">
-              <Skeleton className="rounded-2xl h-[calc(33.333%-0.667rem)]" />
-              <Skeleton className="rounded-2xl h-[calc(33.333%-0.667rem)]" />
-              <Skeleton className="rounded-2xl h-[calc(33.333%-0.667rem)]" />
-            </div>
+            <Skeleton className="rounded-2xl h-full" />
           </div>
         </div>
       </div>

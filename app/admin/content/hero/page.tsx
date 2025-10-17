@@ -126,7 +126,7 @@ export default function HeroManagementPage() {
     }
   };
 
-  const handleGridUpload = async (position: 1 | 2 | 3 | 4, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGridUpload = async (position: 1 | 2, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -166,7 +166,7 @@ export default function HeroManagementPage() {
     toast.success("Image removed");
   };
 
-  const deleteGridImage = (position: 1 | 2 | 3 | 4) => {
+  const deleteGridImage = (position: 1 | 2) => {
     setHeroSettings(prev => ({
       ...prev,
       gridImages: prev.gridImages.filter(img => img.position !== position)
@@ -174,7 +174,7 @@ export default function HeroManagementPage() {
     toast.success("Image removed");
   };
 
-  const getGridImage = (position: 1 | 2 | 3 | 4) => {
+  const getGridImage = (position: 1 | 2) => {
     return heroSettings.gridImages.find(img => img.position === position);
   };
 
@@ -280,10 +280,10 @@ export default function HeroManagementPage() {
                   <LayoutGrid className="w-12 h-12 text-purple-600 mb-4" />
                   <h3 className="text-xl font-bold mb-2">Grid Version</h3>
                   <p className="text-gray-600 text-sm">
-                    4-image grid layout with text content
+                    2-image grid layout with text content
                   </p>
                   <div className="mt-4 text-sm text-purple-600 font-medium">
-                    {heroSettings.gridImages.length} of 4 images configured
+                    {heroSettings.gridImages.length} of 2 images configured
                   </div>
                 </button>
               </div>
@@ -478,77 +478,20 @@ export default function HeroManagementPage() {
             <CardHeader>
               <CardTitle>Grid Layout Images</CardTitle>
               <CardDescription>
-                Upload 4 images for the grid hero version. Layout: 1 large image on left, 3 stacked on right.
+                Upload 2 images for the grid hero version. Layout: 2 equal-sized images side by side.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <Label className="text-lg font-semibold">Position 1 (Large - Left)</Label>
-                  <div className="relative aspect-[3/4] rounded-xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-purple-400 transition-colors">
-                    {uploadingGrid === 1 ? (
-                      <div className="flex items-center justify-center h-full">
-                        <div className="text-center">
-                          <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-                          <p className="text-sm text-gray-600">Uploading...</p>
-                        </div>
-                      </div>
-                    ) : getGridImage(1) ? (
-                      <>
-                        <Image
-                          src={getGridImage(1)!.url}
-                          alt={getGridImage(1)!.alt}
-                          fill
-                          className="object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => document.getElementById("grid-1")?.click()}
-                          >
-                            <Upload className="w-4 h-4 mr-2" />
-                            Change
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deleteGridImage(1)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </>
-                    ) : (
-                      <button
-                        onClick={() => document.getElementById("grid-1")?.click()}
-                        className="flex items-center justify-center h-full w-full"
-                      >
-                        <div className="text-center">
-                          <ImageIcon className="w-12 h-12 mx-auto text-gray-400 mb-2" />
-                          <p className="text-sm text-gray-600">Click to upload</p>
-                        </div>
-                      </button>
-                    )}
-                  </div>
-                  <input
-                    id="grid-1"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleGridUpload(1, e)}
-                    className="hidden"
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <Label className="text-lg font-semibold">Positions 2-4 (Stacked - Right)</Label>
-                  {([2, 3, 4] as const).map((position) => (
-                    <div key={position} className="relative aspect-video rounded-xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-purple-400 transition-colors">
+                {([1, 2] as const).map((position) => (
+                  <div key={position} className="space-y-4">
+                    <Label className="text-lg font-semibold">Position {position}</Label>
+                    <div className="relative aspect-[3/4] rounded-xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-purple-400 transition-colors">
                       {uploadingGrid === position ? (
                         <div className="flex items-center justify-center h-full">
                           <div className="text-center">
-                            <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-                            <p className="text-xs text-gray-600">Uploading...</p>
+                            <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                            <p className="text-sm text-gray-600">Uploading...</p>
                           </div>
                         </div>
                       ) : getGridImage(position) ? (
@@ -565,7 +508,8 @@ export default function HeroManagementPage() {
                               variant="secondary"
                               onClick={() => document.getElementById(`grid-${position}`)?.click()}
                             >
-                              <Upload className="w-4 h-4" />
+                              <Upload className="w-4 h-4 mr-2" />
+                              Change
                             </Button>
                             <Button
                               size="sm"
@@ -582,29 +526,30 @@ export default function HeroManagementPage() {
                           className="flex items-center justify-center h-full w-full"
                         >
                           <div className="text-center">
-                            <ImageIcon className="w-8 h-8 mx-auto text-gray-400 mb-1" />
-                            <p className="text-xs text-gray-600">Position {position}</p>
+                            <ImageIcon className="w-12 h-12 mx-auto text-gray-400 mb-2" />
+                            <p className="text-sm text-gray-600">Click to upload</p>
+                            <p className="text-xs text-gray-500 mt-1">Position {position}</p>
                           </div>
                         </button>
                       )}
-                      <input
-                        id={`grid-${position}`}
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleGridUpload(position, e)}
-                        className="hidden"
-                      />
                     </div>
-                  ))}
-                </div>
+                    <input
+                      id={`grid-${position}`}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleGridUpload(position, e)}
+                      className="hidden"
+                    />
+                  </div>
+                ))}
               </div>
 
               {heroSettings.gridImages.length > 0 && (
                 <div className="mt-6 p-4 bg-purple-50 rounded-lg">
                   <h4 className="font-semibold mb-2">Image Alt Text</h4>
                   <div className="space-y-2">
-                    {[1, 2, 3, 4].map((pos) => {
-                      const image = getGridImage(pos as 1 | 2 | 3 | 4);
+                    {[1, 2].map((pos) => {
+                      const image = getGridImage(pos as 1 | 2);
                       if (!image) return null;
                       return (
                         <div key={pos} className="flex items-center gap-2">
