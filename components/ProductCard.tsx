@@ -43,13 +43,13 @@ export default function ProductCard({ product, targetCurrency = "LKR", className
       className={`group relative ${className}`}
     >
       <Link href={`/shop/${product.slug}`} className="block">
-        <div className="relative overflow-hidden rounded-xl bg-purple-100 shadow-sm hover:shadow-xl transition-all duration-300 border-2 border-purple-600">
-          <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+        <div className="relative overflow-hidden rounded-xl bg-none hover:shadow-xl transition-all duration-300 border-none">
+          <div className="relative aspect-[3/4] overflow-hidden bg-none">
             <Image
               src={product.featuredImage || product.images[0]?.url || "/placeholder.jpg"}
               alt={product.name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110 brightness-90"
+              className="object-cover transition-transform duration-500 group-hover:scale-110 brightness-90 rounded-xl"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               loading="lazy"
             />
@@ -90,7 +90,7 @@ export default function ProductCard({ product, targetCurrency = "LKR", className
             )}
           </div>
 
-          <div className="p-4 space-y-3">
+          <div className="p-4 space-y-1">
             <div>
               <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-purple-600 transition-colors">
                 {product.name}
@@ -98,40 +98,12 @@ export default function ProductCard({ product, targetCurrency = "LKR", className
               
             </div>
 
-            <div className="flex items-center gap-2 flex-wrap">
-              {product.colors.slice(0, 5).map((colorName, index) => {
-                const colorHex = getColorHex(colorName);
-                return (
-                  <div
-                    key={index}
-                    className="w-5 h-5 rounded-full border-2 border-white shadow-lg"
-                    style={{ backgroundColor: colorHex }}
-                    title={colorName}
-                  />
-                );
-              })}
-              {product.colors.length > 5 && (
-                <span className="text-xs text-gray-500">+{product.colors.length - 5}</span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2 flex-wrap">
-              {product.sizes.slice(0, 4).map((size, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {size}
-                </Badge>
-              ))}
-              {product.sizes.length > 4 && (
-                <span className="text-xs text-gray-500">+{product.sizes.length - 4}</span>
-              )}
-            </div>
-
-            <div className="flex items-baseline gap-2 pt-2 border-t border-purple-200">
+            <div className="flex items-baseline gap-2 pt-1">
               <span className="text-lg font-bold text-gray-900">
                 {formatCurrency(convertedPrice, targetCurrency as any)}
               </span>
               {hasDiscount && (
-                <span className="text-sm text-red-800 line-through">
+                <span className="text-sm text-purple-800 line-through">
                   {formatCurrency(originalConvertedPrice, targetCurrency as any)}
                 </span>
               )}
