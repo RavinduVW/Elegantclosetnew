@@ -295,14 +295,14 @@ Please confirm availability and provide payment details. Thank you!`;
             transition={{ duration: 0.5 }}
             className="space-y-4"
           >
-            <div className="relative aspect-square bg-gray-100 rounded-2xl overflow-hidden group">
+            <div className="relative aspect-[9/16] bg-gray-100 rounded-2xl overflow-hidden group">
               <Image
                 src={currentImage}
                 alt={product.name}
                 fill
                 className="object-cover"
                 priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
+                sizes="(max-width: 1024px) 50vw, 25vw"
               />
 
               {product.isSoldOut && (
