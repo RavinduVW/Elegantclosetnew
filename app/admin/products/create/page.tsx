@@ -227,18 +227,17 @@ export default function CreateProductPage() {
       return;
     }
 
-    // Warnings for optional but recommended fields
+    if (salePrice && salePrice.trim() !== "" && parseFloat(salePrice) >= parseFloat(price)) {
+      toast.error("Sale price must be lower than the regular price");
+      return;
+    }
+
     if (!description && !markdownDescription) {
-      toast.warning("⚠️ No description provided. Consider adding product details.");
+      toast.warning("⚠️ No description provided. Consider adding product details for better customer experience.");
     }
 
     if (!material) {
       toast.warning("⚠️ Material field is empty. This helps customers make informed decisions.");
-    }
-
-    if (salePrice && parseFloat(salePrice) >= parseFloat(price)) {
-      toast.error("Sale price must be lower than the regular price");
-      return;
     }
 
     setLoading(true);

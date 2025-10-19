@@ -148,7 +148,7 @@ export default function ViewProductPage() {
           <CardContent>
             {product.images && product.images.length > 0 ? (
               <div className="space-y-4">
-                <div className="relative aspect-square rounded-lg overflow-hidden border-2 border-gray-200">
+                <div className="relative aspect-[9/16] rounded-lg overflow-hidden border-2 border-gray-200">
                   <Image
                     src={product.featuredImage || product.images[0].url}
                     alt={product.name}
@@ -160,7 +160,7 @@ export default function ViewProductPage() {
                 {product.images.length > 1 && (
                   <div className="grid grid-cols-4 gap-2">
                     {product.images.slice(1).map((image, index) => (
-                      <div key={image.id} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200">
+                      <div key={image.id} className="relative aspect-[9/16] rounded-lg overflow-hidden border border-gray-200">
                         <Image
                           src={image.url}
                           alt={image.alt}

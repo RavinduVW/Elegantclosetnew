@@ -256,7 +256,7 @@ export default function EditProductPage() {
       return;
     }
 
-    if (salePrice && parseFloat(salePrice) >= parseFloat(price)) {
+    if (salePrice && salePrice.trim() !== "" && parseFloat(salePrice) >= parseFloat(price)) {
       toast.error("Sale price must be lower than the regular price");
       return;
     }
@@ -575,7 +575,7 @@ export default function EditProductPage() {
                   <img
                     src={image.url}
                     alt={image.alt}
-                    className="w-full h-40 object-cover rounded-lg border-2 border-gray-200"
+                    className="w-full h-auto aspect-[9/16] object-cover rounded-lg border-2 border-gray-200"
                   />
                   {index === 0 && (
                     <Badge className="absolute top-2 left-2 bg-purple-600">Featured</Badge>

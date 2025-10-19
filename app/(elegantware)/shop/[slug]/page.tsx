@@ -171,6 +171,10 @@ export default function ProductDetailPage() {
         ? convertCurrency(finalPrice, "LKR", currency as any)
         : finalPrice;
 
+      const discountText = product.discountPercentage 
+        ? `${product.discountPercentage}% OFF` 
+        : `${Math.round(((product.price - product.salePrice!) / product.price) * 100)}% OFF`;
+
       const message = `Hello! I would like to order the following product:
 
 📦 *Product Details*
@@ -178,7 +182,7 @@ export default function ProductDetailPage() {
 🏷️ *Name:* ${product.name}
 🔖 *SKU:* ${product.sku}
 💰 *Price:* ${formatCurrency(convertedPrice, currency as any)}
-${hasDiscount ? `~~${formatCurrency(currency !== "LKR" ? convertCurrency(product.price, "LKR", currency as any) : product.price, currency as any)}~~ (${product.discountPercentage}% OFF)` : ''}
+${hasDiscount ? `~~${formatCurrency(currency !== "LKR" ? convertCurrency(product.price, "LKR", currency as any) : product.price, currency as any)}~~ (${discountText})` : ''}
 
 🎨 *Selected Color:* ${selectedColor}
 📏 *Selected Size:* ${selectedSize}
