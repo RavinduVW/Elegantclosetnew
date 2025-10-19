@@ -238,23 +238,23 @@ export default function Home() {
                     transition={{ duration: 0.5 }}
                     className="grid md:grid-cols-2 gap-8 items-center bg-white/10 backdrop-blur-lg p-8 rounded-2xl border-2 border-white/20"
                   >
-                    <div className="relative aspect-square rounded-xl overflow-hidden bg-white/20">
+                    <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[500px] rounded-xl overflow-hidden bg-white/20">
                       {saleProducts[currentSaleIndex]?.featuredImage ? (
-                        <Image
-                          src={saleProducts[currentSaleIndex].featuredImage}
-                          alt={saleProducts[currentSaleIndex].name}
-                          fill
-                          className="object-cover"
-                        />
+                      <Image
+                        src={saleProducts[currentSaleIndex].featuredImage}
+                        alt={saleProducts[currentSaleIndex].name}
+                        fill
+                        className="object-contain"
+                      />
                       ) : (
-                        <div className="flex items-center justify-center h-full">
-                          <ShoppingBag className="w-20 h-20 text-white/30" />
-                        </div>
+                      <div className="flex items-center justify-center h-full">
+                        <ShoppingBag className="w-20 h-20 text-white/30" />
+                      </div>
                       )}
                       {saleProducts[currentSaleIndex]?.discountPercentage && (
-                        <Badge className="absolute top-4 right-4 bg-red-500 text-white border-0 text-lg px-4 py-2">
-                          {Math.round(saleProducts[currentSaleIndex].discountPercentage!)}% OFF
-                        </Badge>
+                      <Badge className="absolute top-4 right-4 bg-red-500 text-white border-0 text-lg px-4 py-2">
+                        {Math.round(saleProducts[currentSaleIndex].discountPercentage!)}% OFF
+                      </Badge>
                       )}
                     </div>
 
@@ -355,7 +355,7 @@ export default function Home() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   whileHover={{ scale: 1.05, zIndex: 10 }}
-                  className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer shadow-lg"
+                  className="relative aspect-[9/16] rounded-xl overflow-hidden group cursor-pointer shadow-lg"
                 >
                   <Image
                     src={imageUrl}
