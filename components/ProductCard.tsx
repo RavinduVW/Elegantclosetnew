@@ -23,17 +23,26 @@ const specialTagConfig = {
 };
 
 export default function ProductCard({ product, targetCurrency = "LKR", className = "" }: ProductCardProps) {
+  if (!product) return null;
+  
   const hasDiscount = product.salePrice && product.salePrice < product.price;
   const displayPrice = hasDiscount ? product.salePrice! : product.price;
-  const convertedPrice = targetCurrency !== "LKR" 
+  const convertedPrice = targetCurrency !== "LKR" && displayPrice
     ? convertCurrency(displayPrice, "LKR", targetCurrency as any)
     : displayPrice;
   
-  const originalConvertedPrice = targetCurrency !== "LKR"
+  const originalConvertedPrice = targetCurrency !== "LKR" && product.price
     ? convertCurrency(product.price, "LKR", targetCurrency as any)
     : product.price;
 
   const specialTag = product.specialTag ? specialTagConfig[product.specialTag] : null;
+  
+  const productImage = product.featuredImage || 
+    (product.images && Array.isArray(product.images) && product.images.length > 0 ? product.images[0]?.url : null) || 
+    "/placeholder.jpg";
+  
+  const productName = product.name || "Product";
+  const productSlug = product.slug || product.id || "";
 
   return (
     <motion.div
@@ -42,12 +51,12 @@ export default function ProductCard({ product, targetCurrency = "LKR", className
       transition={{ duration: 0.4 }}
       className={`group relative ${className}`}
     >
-      <Link href={`/shop/${product.slug}`} className="block">
+      <Link href={`/shop/${productSlug}`} className="block">
         <div className="relative overflow-hidden rounded-xl bg-none hover:shadow-xl transition-all duration-300 border-none">
           <div className="relative aspect-[3/4] overflow-hidden bg-none">
             <Image
-              src={product.featuredImage || product.images[0]?.url || "/placeholder.jpg"}
-              alt={product.name}
+              src={productImage}
+              alt={productName}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110 brightness-90 rounded-xl"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -93,16 +102,16 @@ export default function ProductCard({ product, targetCurrency = "LKR", className
           <div className="p-4 space-y-1">
             <div>
               <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-purple-600 transition-colors">
-                {product.name}
+                {productName}
               </h3>
               
             </div>
 
             <div className="flex items-baseline gap-2 pt-1">
               <span className="text-lg font-bold text-gray-900">
-                {formatCurrency(convertedPrice, targetCurrency as any)}
+                {displayPrice ? formatCurrency(convertedPrice, targetCurrency as any) : "Price not available"}
               </span>
-              {hasDiscount && (
+              {hasDiscount && displayPrice && (
                 <span className="text-sm text-purple-800 line-through">
                   {formatCurrency(originalConvertedPrice, targetCurrency as any)}
                 </span>

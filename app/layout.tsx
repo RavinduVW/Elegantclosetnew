@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 import Header from "./components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 
 export const metadata: Metadata = {
@@ -69,22 +70,24 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head />
       <body>
-        <Header />
-        {children}
-        <Footer />
-        <WhatsAppButton />
-        <Toaster
-          position="top-right"
-          expand={false}
-          richColors
-          toastOptions={{
-            style: {
-              fontFamily: "'Poppins', sans-serif",
-            },
-          }}
-        />
-        <Analytics />
-        <SpeedInsights />
+        <ErrorBoundary>
+          <Header />
+          {children}
+          <Footer />
+          <WhatsAppButton />
+          <Toaster
+            position="top-right"
+            expand={false}
+            richColors
+            toastOptions={{
+              style: {
+                fontFamily: "'Poppins', sans-serif",
+              },
+            }}
+          />
+          <Analytics />
+          <SpeedInsights />
+        </ErrorBoundary>
       </body>
     </html>
   );
