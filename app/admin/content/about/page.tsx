@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { collection, addDoc, updateDoc, doc, getDocs, Timestamp, query, limit } from "firebase/firestore";
 import { db } from "@/backend/config";
 import { AboutContent } from "@/admin-lib/types";
-import { uploadToImageBB } from "@/lib/imagebb";
+import { uploadToUploadME } from "@/lib/uploadme";
 import { FileText, Save, Eye, Upload, X, Bold, Italic, List, ListOrdered, Heading1, Heading2, Heading3, Image as ImageIcon, Link as LinkIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -88,6 +88,9 @@ export default function AboutManagementPage() {
         updatedBy: "admin",
       };
 
+      console.log("About page data to save:", data);
+      console.log("Images array:", data.images);
+
       Object.keys(data).forEach(key => {
         if (data[key] === undefined) {
           delete data[key];
@@ -95,7 +98,9 @@ export default function AboutManagementPage() {
       });
 
       if (content) {
+        console.log("Updating existing about page in Firestore...");
         await updateDoc(doc(db, "about", content.id), data);
+        console.log("About page updated in Firestore");
         toast.success("About page updated successfully");
       } else {
         const newDocData = { ...data, createdAt: now };
@@ -104,7 +109,9 @@ export default function AboutManagementPage() {
             delete newDocData[key];
           }
         });
-        await addDoc(collection(db, "about"), newDocData);
+        console.log("Creating new about page in Firestore...");
+        const docRef = await addDoc(collection(db, "about"), newDocData);
+        console.log("About page created in Firestore with ID:", docRef.id);
         toast.success("About page created successfully");
       }
 
@@ -142,12 +149,23 @@ export default function AboutManagementPage() {
 
     try {
       setIsUploading(true);
-      const response = await uploadToImageBB(file, "about-page");
-      setImages([...images, {
+      console.log("Uploading about page image...");
+      const response = await uploadToUploadME(file, {
+        name: "about-page",
+        folder: "content/about",
+        quality: 100,
+        preserveOriginal: true,
+        tags: ["about", "content"],
+      });
+      console.log("About image uploaded, response:", response);
+      console.log("Display URL extracted:", response.data.display_url);
+      const newImageObj = {
         url: response.data.display_url,
         alt: newImage.alt || file.name,
         caption: newImage.caption || undefined,
-      }]);
+      };
+      console.log("New image object:", newImageObj);
+      setImages([...images, newImageObj]);
       setNewImage({ alt: "", caption: "" });
       toast.success("Image uploaded successfully");
     } catch (error: any) {

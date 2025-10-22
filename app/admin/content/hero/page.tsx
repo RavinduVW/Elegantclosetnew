@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/backend/config";
 import { HeroSettings, HeroImage, HeroGridImage } from "@/admin-lib/types";
-import { uploadToImageBB, uploadMultipleToImageBB } from "@/lib/imagebb";
+import { uploadToUploadME, uploadMultipleToUploadME } from "@/lib/uploadme";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -82,16 +82,34 @@ export default function HeroManagementPage() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      const docRef = doc(db, "hero_settings", "global");
-      await setDoc(docRef, {
+      console.log("=== STARTING FIRESTORE SAVE ===");
+      console.log("Full hero settings object:", JSON.stringify(heroSettings, null, 2));
+      console.log("Carousel images count:", heroSettings.carouselImages.length);
+      console.log("Grid images count:", heroSettings.gridImages.length);
+      
+      const dataToSave = {
         ...heroSettings,
         updatedAt: Timestamp.now(),
         updatedBy: "admin"
-      });
+      };
+      console.log("Data being sent to Firestore:", JSON.stringify(dataToSave, null, 2));
+      
+      const docRef = doc(db, "hero_settings", "global");
+      console.log("Firestore document path: hero_settings/global");
+      
+      await setDoc(docRef, dataToSave);
+      
+      console.log("✅ SUCCESS: Hero settings saved to Firestore");
+      console.log("=== FIRESTORE SAVE COMPLETE ===");
       toast.success("Hero settings saved successfully!");
-    } catch (error) {
-      console.error("Error saving hero settings:", error);
-      toast.error("Failed to save hero settings");
+    } catch (error: any) {
+      console.error("❌ ERROR: Failed to save hero settings");
+      console.error("Error type:", error.constructor.name);
+      console.error("Error message:", error.message);
+      console.error("Error code:", error.code);
+      console.error("Full error object:", error);
+      console.error("=== FIRESTORE SAVE FAILED ===");
+      toast.error(`Failed to save: ${error.message || "Unknown error"}`);
     } finally {
       setSaving(false);
     }
@@ -103,24 +121,36 @@ export default function HeroManagementPage() {
 
     try {
       setUploadingCarousel(true);
-      const uploadedUrls = await uploadMultipleToImageBB(Array.from(files), "hero-carousel");
+      console.log(`Uploading ${files.length} carousel images...`);
+      const uploadedUrls = await uploadMultipleToUploadME(Array.from(files), {
+        namePrefix: "hero-carousel",
+        folder: "content/hero",
+        quality: 100,
+        preserveOriginal: true,
+        tags: ["hero", "carousel"],
+      });
+      console.log("Carousel images uploaded, URLs received:", uploadedUrls);
       
-      const newImages: HeroImage[] = uploadedUrls.map((url, index) => ({
+      const newImages: HeroImage[] = uploadedUrls.map((url: string, index: number) => ({
         id: `carousel-${Date.now()}-${index}`,
         url,
         alt: `Hero carousel image ${heroSettings.carouselImages.length + index + 1}`,
         order: heroSettings.carouselImages.length + index
       }));
+      console.log("Mapped carousel images:", newImages);
 
       setHeroSettings(prev => ({
         ...prev,
         carouselImages: [...prev.carouselImages, ...newImages]
       }));
 
-      toast.success(`${newImages.length} image(s) uploaded successfully!`);
+      console.log("⚠️ IMPORTANT: Images uploaded but NOT yet saved to Firestore");
+      console.log("⚠️ You MUST click 'Save Settings' button to persist to database");
+      toast.success(`${newImages.length} image(s) uploaded! Remember to click 'Save Settings'`);
     } catch (error) {
       console.error("Error uploading carousel images:", error);
-      toast.error("Failed to upload images");
+      console.error("Full error details:", error);
+      toast.error(`Failed to upload images: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setUploadingCarousel(false);
     }
@@ -132,7 +162,16 @@ export default function HeroManagementPage() {
 
     try {
       setUploadingGrid(position);
-      const response = await uploadToImageBB(file, `hero-grid-${position}`);
+      console.log(`Uploading grid image ${position}...`);
+      const response = await uploadToUploadME(file, {
+        name: `hero-grid-${position}`,
+        folder: "content/hero",
+        quality: 100,
+        preserveOriginal: true,
+        tags: ["hero", "grid", `position-${position}`],
+      });
+      console.log("Grid image uploaded, response:", response);
+      console.log("Display URL extracted:", response.data.display_url);
       
       const newImage: HeroGridImage = {
         id: `grid-${position}-${Date.now()}`,
@@ -140,6 +179,7 @@ export default function HeroManagementPage() {
         alt: `Hero grid image ${position}`,
         position
       };
+      console.log("Grid image object created:", newImage);
 
       setHeroSettings(prev => ({
         ...prev,
@@ -149,10 +189,13 @@ export default function HeroManagementPage() {
         ]
       }));
 
-      toast.success(`Grid image ${position} uploaded successfully!`);
+      console.log("⚠️ IMPORTANT: Image uploaded but NOT yet saved to Firestore");
+      console.log("⚠️ You MUST click 'Save Settings' button to persist to database");
+      toast.success(`Grid image ${position} uploaded! Remember to click 'Save Settings'`);
     } catch (error) {
       console.error("Error uploading grid image:", error);
-      toast.error("Failed to upload image");
+      console.error("Full error details:", error);
+      toast.error(`Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setUploadingGrid(null);
     }
