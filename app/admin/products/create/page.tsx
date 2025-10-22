@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import MDEditor from "@uiw/react-md-editor";
-import { uploadMultipleToImageBB } from "@/lib/imagebb";
+import { uploadMultipleToUploadME } from "@/lib/uploadme";
 import { PREDEFINED_COLORS, getAllColorNames } from "@/lib/colors";
 import { getAllSizeCodes, sortSizes } from "@/lib/sizes";
 import { ArrowLeft, Upload, X, Loader2, Sparkles, TrendingUp, Award, Clock } from "lucide-react";
@@ -243,17 +243,33 @@ export default function CreateProductPage() {
     setLoading(true);
 
     try {
-      console.log(`Uploading ${imageFiles.length} images to ImageBB...`);
+      console.log(`Uploading ${imageFiles.length} images to UploadME...`);
       toast.info(`Uploading ${imageFiles.length} image${imageFiles.length > 1 ? 's' : ''}...`);
       
-      const imageUrls = await uploadMultipleToImageBB(imageFiles, "products");
+      const imageUrls = await uploadMultipleToUploadME(imageFiles, {
+        namePrefix: "products",
+        folder: "products",
+        quality: 100,
+        preserveOriginal: true,
+        tags: ["product", name || "product-image"],
+      });
       console.log("Images uploaded successfully:", imageUrls);
+      console.log("Number of URLs:", imageUrls.length);
+      console.log("First URL:", imageUrls[0]);
 
       const sizesArray = [...selectedSizes];
       if (customSizes) {
         const customSizesArray = customSizes.split(",").map(s => s.trim()).filter(Boolean);
         sizesArray.push(...customSizesArray);
       }
+
+      const mappedImages = imageUrls.map((url, index) => ({
+        id: `img-${Date.now()}-${index}`,
+        url,
+        alt: name,
+        order: index,
+      }));
+      console.log("Mapped images for Firestore:", mappedImages);
 
       const productData: Omit<Product, "id"> = {
         name,
@@ -280,12 +296,7 @@ export default function CreateProductPage() {
         customSizes: customSizes && customSizes.trim() !== "" ? customSizes.split(",").map(s => s.trim()).filter(Boolean) : undefined,
         material: material && material.trim() !== "" ? material : undefined,
         brand: brand && brand.trim() !== "" ? brand : undefined,
-        images: imageUrls.map((url, index) => ({
-          id: `img-${Date.now()}-${index}`,
-          url,
-          alt: name,
-          order: index,
-        })),
+        images: mappedImages,
         featuredImage: imageUrls[0],
         hasVariants: false,
         status,
@@ -310,9 +321,8 @@ export default function CreateProductPage() {
     } catch (error: any) {
       console.error("Error creating product:", error);
       
-      // Better error messages based on error type
-      if (error.message?.includes('ImageBB')) {
-        toast.error("Image upload failed. Check your ImageBB API key.");
+      if (error.message?.includes('UploadME') || error.message?.includes('upload')) {
+        toast.error("Image upload failed: " + error.message);
       } else if (error.code === 'permission-denied') {
         toast.error("Permission denied. Check Firebase security rules.");
       } else {

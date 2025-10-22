@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import MDEditor from "@uiw/react-md-editor";
-import { uploadMultipleToImageBB } from "@/lib/imagebb";
+import { uploadMultipleToUploadME } from "@/lib/uploadme";
 import { PREDEFINED_COLORS, getAllColorNames } from "@/lib/colors";
 import { getAllSizeCodes, sortSizes } from "@/lib/sizes";
 import { ArrowLeft, Upload, X, Loader2, Sparkles, TrendingUp, Award, Clock } from "lucide-react";
@@ -267,9 +267,15 @@ export default function EditProductPage() {
       let newImageUrls: string[] = [];
 
       if (imageFiles.length > 0) {
-        console.log(`Uploading ${imageFiles.length} new images to ImageBB...`);
+        console.log(`Uploading ${imageFiles.length} new images to UploadME...`);
         toast.info(`Uploading ${imageFiles.length} new image${imageFiles.length > 1 ? 's' : ''}...`);
-        newImageUrls = await uploadMultipleToImageBB(imageFiles, "products");
+        newImageUrls = await uploadMultipleToUploadME(imageFiles, {
+          namePrefix: "products",
+          folder: "products",
+          quality: 100,
+          preserveOriginal: true,
+          tags: ["product", name || "product-image"],
+        });
         console.log("New images uploaded successfully:", newImageUrls);
       }
 
