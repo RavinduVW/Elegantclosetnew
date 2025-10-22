@@ -19,7 +19,7 @@ import { ArrowLeft, Save, Upload, X } from "lucide-react";
 import Link from "next/link";
 import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/backend/config";
-import { uploadToImageBB } from "@/lib/imagebb";
+import { uploadToUploadME } from "@/lib/uploadme";
 import { Category } from "@/admin-lib/types";
 import { toast } from "sonner";
 
@@ -112,13 +112,20 @@ export default function EditCategoryPage() {
     if (!imageFile) return undefined;
 
     try {
-      console.log("Uploading category image to ImageBB...");
-      const response = await uploadToImageBB(imageFile, `category-${formData.slug || Date.now()}`);
-      console.log("Image uploaded successfully:", response.data.display_url);
+      console.log("Uploading category image to UploadME...");
+      const response = await uploadToUploadME(imageFile, {
+        name: `category-${formData.slug || Date.now()}`,
+        folder: "categories",
+        quality: 100,
+        preserveOriginal: true,
+        tags: ["category", formData.name || "category-image"],
+      });
+      console.log("Category image upload response:", response);
+      console.log("Display URL extracted:", response.data.display_url);
       return response.data.display_url;
     } catch (error) {
       console.error("Error uploading image:", error);
-      toast.error("Failed to upload image to ImageBB");
+      toast.error("Failed to upload image: " + (error instanceof Error ? error.message : "Unknown error"));
       return undefined;
     }
   };
@@ -135,6 +142,7 @@ export default function EditCategoryPage() {
 
     try {
       const imageUrl = await uploadImage();
+      console.log("Image URL to be saved:", imageUrl);
 
       const updateData: any = {
         name: formData.name,
@@ -155,7 +163,9 @@ export default function EditCategoryPage() {
         updateData.image = null;
       }
 
+      console.log("Category update data:", updateData);
       await updateDoc(doc(db, "categories", categoryId), updateData);
+      console.log("Category updated in Firestore");
       toast.success("Category updated successfully");
       router.push("/admin/categories");
     } catch (error) {
