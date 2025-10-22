@@ -108,6 +108,14 @@ export default function ProductDetailPage() {
 
       if (!snapshot.empty) {
         const productData = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Product;
+        
+        if (!productData.colors || !Array.isArray(productData.colors)) {
+          productData.colors = [];
+        }
+        if (!productData.sizes || !Array.isArray(productData.sizes)) {
+          productData.sizes = [];
+        }
+        
         setProduct(productData);
         setSelectedColor(productData.colors[0] || "");
         setSelectedSize(productData.sizes[0] || "");
@@ -134,25 +142,25 @@ export default function ProductDetailPage() {
 
   const handlePrevImage = () => {
     setSelectedImageIndex((prev) => 
-      prev === 0 ? (product?.images.length || 1) - 1 : prev - 1
+      prev === 0 ? (safeImages.length || 1) - 1 : prev - 1
     );
   };
 
   const handleNextImage = () => {
     setSelectedImageIndex((prev) => 
-      prev === (product?.images.length || 1) - 1 ? 0 : prev + 1
+      prev === (safeImages.length || 1) - 1 ? 0 : prev + 1
     );
   };
 
   const handleOrderViaWhatsApp = () => {
     if (!product) return;
 
-    if (!selectedColor) {
+    if (product.colors && product.colors.length > 0 && !selectedColor) {
       alert("Please select a color before ordering");
       return;
     }
 
-    if (!selectedSize) {
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
       alert("Please select a size before ordering");
       return;
     }
@@ -175,18 +183,21 @@ export default function ProductDetailPage() {
         ? `${product.discountPercentage}% OFF` 
         : `${Math.round(((product.price - product.salePrice!) / product.price) * 100)}% OFF`;
 
+      const colorLine = selectedColor ? `🎨 *Selected Color:* ${selectedColor}` : '';
+      const sizeLine = selectedSize ? `📏 *Selected Size:* ${selectedSize}` : '';
+      const materialLine = product.material ? `🧵 *Material:* ${product.material}` : '';
+
       const message = `Hello! I would like to order the following product:
 
 📦 *Product Details*
 ━━━━━━━━━━━━━━━
-🏷️ *Name:* ${product.name}
-🔖 *SKU:* ${product.sku}
+🏷️ *Name:* ${product.name || 'Product'}
+🔖 *SKU:* ${product.sku || 'N/A'}
 💰 *Price:* ${formatCurrency(convertedPrice, currency as any)}
 ${hasDiscount ? `~~${formatCurrency(currency !== "LKR" ? convertCurrency(product.price, "LKR", currency as any) : product.price, currency as any)}~~ (${discountText})` : ''}
-
-🎨 *Selected Color:* ${selectedColor}
-📏 *Selected Size:* ${selectedSize}
-${product.material ? `🧵 *Material:* ${product.material}` : ''}
+${colorLine}
+${sizeLine}
+${materialLine}
 
 🔗 *Product Link:* ${window.location.href}
 
@@ -236,17 +247,23 @@ Please confirm availability and provide payment details. Thank you!`;
 
   const hasDiscount = product.salePrice && product.salePrice < product.price;
   const displayPrice = hasDiscount ? product.salePrice! : product.price;
-  const convertedPrice = currency !== "LKR" 
+  const convertedPrice = currency !== "LKR" && displayPrice
     ? convertCurrency(displayPrice, "LKR", currency as any)
     : displayPrice;
   
-  const originalConvertedPrice = currency !== "LKR"
+  const originalConvertedPrice = currency !== "LKR" && product.price
     ? convertCurrency(product.price, "LKR", currency as any)
     : product.price;
 
   const specialTag = product.specialTag ? specialTagConfig[product.specialTag] : null;
 
-  const currentImage = product.images[selectedImageIndex]?.url || product.featuredImage;
+  const safeImages = product.images && Array.isArray(product.images) && product.images.length > 0 
+    ? product.images 
+    : product.featuredImage 
+      ? [{ id: 'featured', url: product.featuredImage, alt: product.name || 'Product', order: 0 }] 
+      : [];
+  
+  const currentImage = safeImages[selectedImageIndex]?.url || product.featuredImage || '/placeholder.jpg';
 
   return (
     <div className="min-h-screen bg-white">
@@ -336,7 +353,7 @@ Please confirm availability and provide payment details. Thank you!`;
                 )}
               </div>
 
-              {product.images.length > 1 && (
+              {safeImages.length > 1 && (
                 <>
                   <button
                     onClick={handlePrevImage}
@@ -354,9 +371,9 @@ Please confirm availability and provide payment details. Thank you!`;
               )}
             </div>
 
-            {product.images.length > 1 && (
+            {safeImages.length > 1 && (
               <div className="flex gap-2 overflow-x-auto pb-2">
-                {product.images.map((image, index) => (
+                {safeImages.map((image, index) => (
                   <button
                     key={image.id}
                     onClick={() => setSelectedImageIndex(index)}
@@ -391,17 +408,17 @@ Please confirm availability and provide payment details. Thank you!`;
                   Featured Product
                 </Badge>
               )}
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">{product.name}</h1>
-              {product.brand && (
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">{product.name || "Product"}</h1>
+              {product.brand ? (
                 <p className="text-lg text-gray-600">by {product.brand}</p>
-              )}
+              ) : null}
             </div>
 
             <div className="flex items-baseline gap-3">
               <span className="text-3xl font-bold text-gray-900">
-                {formatCurrency(convertedPrice, currency as any)}
+                {product.price ? formatCurrency(convertedPrice, currency as any) : "Price not available"}
               </span>
-              {hasDiscount && (
+              {hasDiscount && product.price && (
                 <span className="text-xl text-gray-400 line-through">
                   {formatCurrency(originalConvertedPrice, currency as any)}
                 </span>
@@ -435,60 +452,76 @@ Please confirm availability and provide payment details. Thank you!`;
             <Separator />
 
             <div className="space-y-4">
-              <div>
-                <Label className="text-sm font-semibold text-gray-900 mb-2 block">
-                  Color: {selectedColor}
-                </Label>
-                <div className="flex flex-wrap gap-2">
-                  {product.colors.map((color) => {
-                    const isSelected = selectedColor === color;
-                    const colorHex = getColorHex(color);
-                    
-                    return (
-                      <button
-                        key={color}
-                        onClick={() => setSelectedColor(color)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
-                          isSelected
-                            ? "border-purple-500 bg-purple-50 ring-2 ring-purple-200"
-                            : "border-gray-200 hover:border-purple-300"
-                        }`}
-                      >
-                        <div
-                          className="w-5 h-5 rounded-full border"
-                          style={{ backgroundColor: colorHex }}
-                        />
-                        <span className="text-sm font-medium">{color}</span>
-                      </button>
-                    );
-                  })}
+              {product.colors && product.colors.length > 0 ? (
+                <div>
+                  <Label className="text-sm font-semibold text-gray-900 mb-2 block">
+                    Color: {selectedColor || "Please select"}
+                  </Label>
+                  <div className="flex flex-wrap gap-2">
+                    {product.colors.map((color) => {
+                      const isSelected = selectedColor === color;
+                      const colorHex = getColorHex(color);
+                      
+                      return (
+                        <button
+                          key={color}
+                          onClick={() => setSelectedColor(color)}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
+                            isSelected
+                              ? "border-purple-500 bg-purple-50 ring-2 ring-purple-200"
+                              : "border-gray-200 hover:border-purple-300"
+                          }`}
+                        >
+                          <div
+                            className="w-5 h-5 rounded-full border"
+                            style={{ backgroundColor: colorHex }}
+                          />
+                          <span className="text-sm font-medium">{color}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold text-gray-900">Color:</span> Contact us for available colors
+                  </p>
+                </div>
+              )}
 
-              <div>
-                <Label className="text-sm font-semibold text-gray-900 mb-2 block">
-                  Size: {selectedSize}
-                </Label>
-                <div className="flex flex-wrap gap-2">
-                  {product.sizes.map((size) => {
-                    const isSelected = selectedSize === size;
-                    
-                    return (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        className={`px-5 py-2.5 rounded-lg border font-medium transition-all ${
-                          isSelected
-                            ? "border-purple-500 bg-purple-500 text-white"
-                            : "border-gray-300 hover:border-purple-400"
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    );
-                  })}
+              {product.sizes && product.sizes.length > 0 ? (
+                <div>
+                  <Label className="text-sm font-semibold text-gray-900 mb-2 block">
+                    Size: {selectedSize || "Please select"}
+                  </Label>
+                  <div className="flex flex-wrap gap-2">
+                    {product.sizes.map((size) => {
+                      const isSelected = selectedSize === size;
+                      
+                      return (
+                        <button
+                          key={size}
+                          onClick={() => setSelectedSize(size)}
+                          className={`px-5 py-2.5 rounded-lg border font-medium transition-all ${
+                            isSelected
+                              ? "border-purple-500 bg-purple-500 text-white"
+                              : "border-gray-300 hover:border-purple-400"
+                          }`}
+                        >
+                          {size}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold text-gray-900">Size:</span> Contact us for available sizes
+                  </p>
+                </div>
+              )}
             </div>
 
             <Separator />
@@ -519,9 +552,10 @@ Please confirm availability and provide payment details. Thank you!`;
               <p className="text-xs text-center text-gray-500">
                 {!product.isSoldOut && whatsappNumber ? (
                   <>
-                    {!selectedColor || !selectedSize ? (
+                    {(product.colors && product.colors.length > 0 && !selectedColor) || 
+                     (product.sizes && product.sizes.length > 0 && !selectedSize) ? (
                       <span className="text-amber-600 font-medium">
-                        ⚠️ Please select color and size before ordering
+                        ⚠️ Please select {!selectedColor && product.colors?.length > 0 ? 'color' : ''}{(!selectedColor && product.colors?.length > 0 && !selectedSize && product.sizes?.length > 0) ? ' and ' : ''}{!selectedSize && product.sizes?.length > 0 ? 'size' : ''} before ordering
                       </span>
                     ) : (
                       "Click to send order details via WhatsApp"
