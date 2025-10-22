@@ -8,6 +8,7 @@ import { auth, db } from "@/backend/config";
 import AdminSidebar from "@/admin-components/layout/AdminSidebar";
 import AdminHeader from "@/admin-components/layout/AdminHeader";
 import { Toaster } from "sonner";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 interface AdminUser {
   id: string;
@@ -95,22 +96,24 @@ export default function AdminLayout({
 
   // Show admin layout
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Toaster position="top-right" richColors />
-      <AdminSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
-      
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <AdminHeader 
-          user={user} 
-          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
-        />
+    <ErrorBoundary>
+      <div className="flex h-screen bg-gray-100">
+        <Toaster position="top-right" richColors />
+        <AdminSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
         
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-zincs-50 p-6">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
-        </main>
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <AdminHeader 
+            user={user} 
+            onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          />
+          
+          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-zincs-50 p-6">
+            <div className="max-w-7xl mx-auto">
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }
