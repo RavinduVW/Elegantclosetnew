@@ -1,6 +1,8 @@
 /**
- * ImageBB API Integration
- * Free image hosting service for product images
+ * ImageBB API Integration (LEGACY - Display Only)
+ * ⚠️ WARNING: This service is deprecated for NEW uploads
+ * Use UploadME service (lib/uploadme.ts) for all new image uploads
+ * This module is kept only for displaying existing ImageBB-hosted images
  */
 
 import axios from 'axios';
@@ -26,7 +28,8 @@ export interface ImageBBResponse {
 }
 
 /**
- * Upload image to ImageBB
+ * Upload image to ImageBB (DEPRECATED - Use uploadToUploadME instead)
+ * @deprecated This function is deprecated. Use uploadToUploadME from lib/uploadme.ts
  * @param file Image file to upload
  * @param name Optional name for the image
  * @returns Promise with ImageBB response
@@ -35,6 +38,8 @@ export async function uploadToImageBB(
   file: File,
   name?: string
 ): Promise<ImageBBResponse> {
+  console.warn('⚠️ uploadToImageBB is deprecated. Please use uploadToUploadME from lib/uploadme.ts');
+  
   if (!IMGBB_API_KEY) {
     throw new Error('ImageBB API key is not configured. Add NEXT_PUBLIC_IMGBB_API_KEY to your .env file');
   }
@@ -68,7 +73,8 @@ export async function uploadToImageBB(
 }
 
 /**
- * Upload multiple images to ImageBB
+ * Upload multiple images to ImageBB (DEPRECATED - Use uploadMultipleToUploadME instead)
+ * @deprecated This function is deprecated. Use uploadMultipleToUploadME from lib/uploadme.ts
  * @param files Array of image files
  * @param namePrefix Optional prefix for image names
  * @returns Promise with array of image URLs
@@ -77,6 +83,7 @@ export async function uploadMultipleToImageBB(
   files: File[],
   namePrefix?: string
 ): Promise<string[]> {
+  console.warn('⚠️ uploadMultipleToImageBB is deprecated. Please use uploadMultipleToUploadME from lib/uploadme.ts');
   const uploadPromises = files.map((file, index) => {
     const name = namePrefix ? `${namePrefix}_${index + 1}` : undefined;
     return uploadToImageBB(file, name);
