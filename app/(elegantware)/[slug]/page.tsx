@@ -101,7 +101,7 @@ export default function CategoryPage() {
       const productsRef = collection(db, "products");
       let productsQuery = query(
         productsRef,
-        where("categoryId", "==", categoryData.id),
+        where("categoryId", "==", categoryData.id || ""),
         where("status", "==", "published")
       );
 

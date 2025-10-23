@@ -207,24 +207,21 @@ export default function CreateProductPage() {
       return;
     }
 
-    if (selectedColors.length === 0) {
-      toast.error("Please select at least one color");
-      return;
-    }
-
-    if (selectedSizes.length === 0 && !customSizes) {
-      toast.error("Please select at least one size or add custom sizes");
-      return;
-    }
-
-    if (!categoryId) {
-      toast.error("Please select a category");
-      return;
-    }
-
     if (imageFiles.length === 0) {
       toast.error("Please upload at least one image");
       return;
+    }
+
+    if (selectedColors.length === 0) {
+      toast.warning("⚠️ No colors selected. Product will be created without color options.");
+    }
+
+    if (selectedSizes.length === 0 && !customSizes) {
+      toast.warning("⚠️ No sizes selected. Product will be created without size options.");
+    }
+
+    if (!categoryId) {
+      toast.warning("⚠️ No category selected. Product will appear in 'Uncategorized' section.");
     }
 
     if (salePrice && salePrice.trim() !== "" && parseFloat(salePrice) >= parseFloat(price)) {
@@ -288,11 +285,11 @@ export default function CreateProductPage() {
         stockQuantity: stockQuantity && stockQuantity.trim() !== "" ? parseInt(stockQuantity) : undefined,
         lowStockThreshold: lowStockThreshold && lowStockThreshold.trim() !== "" ? parseInt(lowStockThreshold) : undefined,
         allowBackorder,
-        categoryId,
+        categoryId: categoryId && categoryId.trim() !== "" ? categoryId : undefined,
         subCategoryId: subCategoryId && subCategoryId.trim() !== "" ? subCategoryId : undefined,
         tags: tags && tags.trim() !== "" ? tags.split(",").map(t => t.trim()).filter(Boolean) : [],
-        colors: selectedColors,
-        sizes: sortSizes(sizesArray),
+        colors: selectedColors.length > 0 ? selectedColors : [],
+        sizes: sizesArray.length > 0 ? sortSizes(sizesArray) : [],
         customSizes: customSizes && customSizes.trim() !== "" ? customSizes.split(",").map(s => s.trim()).filter(Boolean) : undefined,
         material: material && material.trim() !== "" ? material : undefined,
         brand: brand && brand.trim() !== "" ? brand : undefined,
@@ -590,7 +587,9 @@ export default function CreateProductPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-3">
-              <Label>Colors * (Select at least one)</Label>
+              <Label className="flex items-center gap-2">
+                Colors <Badge variant="secondary">Optional</Badge>
+              </Label>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 max-h-64 overflow-y-auto p-2 border rounded-lg">
                 {allColors.map((colorName) => {
                   const colorData = PREDEFINED_COLORS.find(c => c.name === colorName);
@@ -623,7 +622,9 @@ export default function CreateProductPage() {
             </div>
 
             <div className="space-y-3">
-              <Label>Sizes * (Select at least one)</Label>
+              <Label className="flex items-center gap-2">
+                Sizes <Badge variant="secondary">Optional</Badge>
+              </Label>
               <div className="flex flex-wrap gap-2">
                 {allSizes.map((size) => {
                   const isSelected = selectedSizes.includes(size);
@@ -692,18 +693,19 @@ export default function CreateProductPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="category">Main Category *</Label>
-              <Select value={categoryId} onValueChange={setCategoryId} disabled={categoriesLoading || categories.length === 0}>
+              <Label htmlFor="category" className="flex items-center gap-2">
+                Main Category <Badge variant="secondary">Optional</Badge>
+              </Label>
+              <Select value={categoryId || "none"} onValueChange={(val) => setCategoryId(val === "none" ? "" : val)} disabled={categoriesLoading}>
                 <SelectTrigger>
                   <SelectValue placeholder={
                     categoriesLoading 
                       ? "Loading categories..." 
-                      : categories.length === 0 
-                        ? "No categories available - create one first" 
-                        : "Select a category"
+                      : "No category (product will be uncategorized)"
                   } />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="none">No Category</SelectItem>
                   {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
                       {cat.name}
@@ -711,11 +713,9 @@ export default function CreateProductPage() {
                   ))}
                 </SelectContent>
               </Select>
-              {!categoriesLoading && categories.length === 0 && (
-                <p className="text-xs text-amber-600">
-                  ⚠️ Please create categories in the Categories section first
-                </p>
-              )}
+              <p className="text-xs text-muted-foreground">
+                Products without categories will appear in the shop page
+              </p>
             </div>
 
             {categoryId && (

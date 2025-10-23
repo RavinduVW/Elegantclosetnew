@@ -126,7 +126,7 @@ export default function EditProductPage() {
       setSku(product.sku);
       setPrice(product.price.toString());
       setSalePrice(product.salePrice?.toString() || "");
-      setCategoryId(product.categoryId);
+      setCategoryId(product.categoryId || "");
       setSubCategoryId(product.subCategoryId || "");
       setSelectedColors(product.colors || []);
       setSelectedSizes(product.sizes || []);
@@ -312,7 +312,7 @@ export default function EditProductPage() {
         stockQuantity: stockQuantity && stockQuantity.trim() !== "" ? parseInt(stockQuantity) : undefined,
         lowStockThreshold: lowStockThreshold && lowStockThreshold.trim() !== "" ? parseInt(lowStockThreshold) : undefined,
         allowBackorder,
-        categoryId,
+        categoryId: categoryId && categoryId.trim() !== "" ? categoryId : undefined,
         subCategoryId: subCategoryId && subCategoryId.trim() !== "" ? subCategoryId : undefined,
         tags: tags && tags.trim() !== "" ? tags.split(",").map(t => t.trim()).filter(Boolean) : [],
         colors: selectedColors,
@@ -743,18 +743,19 @@ export default function EditProductPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="category">Main Category *</Label>
-              <Select value={categoryId} onValueChange={setCategoryId} disabled={categoriesLoading || categories.length === 0}>
+              <Label htmlFor="category" className="flex items-center gap-2">
+                Main Category <Badge variant="secondary">Optional</Badge>
+              </Label>
+              <Select value={categoryId || "none"} onValueChange={(val) => setCategoryId(val === "none" ? "" : val)} disabled={categoriesLoading}>
                 <SelectTrigger>
                   <SelectValue placeholder={
                     categoriesLoading 
                       ? "Loading categories..." 
-                      : categories.length === 0 
-                        ? "No categories available" 
-                        : "Select a category"
+                      : "No category (product will be uncategorized)"
                   } />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="none">No Category</SelectItem>
                   {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
                       {cat.name}
@@ -762,6 +763,9 @@ export default function EditProductPage() {
                   ))}
                 </SelectContent>
               </Select>
+              <p className="text-xs text-muted-foreground">
+                Products without categories will appear in the shop page
+              </p>
             </div>
 
             {categoryId && (
