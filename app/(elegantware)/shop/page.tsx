@@ -97,43 +97,54 @@ export default function ShopPage() {
         setLoadingMore(true);
       }
 
-      let q = query(
-        collection(db, "products"),
-        where("status", "==", "published")
-      );
+      const productsRef = collection(db, "products");
+      let constraints: any[] = [where("status", "==", "published")];
 
       if (selectedCategoryId) {
-        q = query(q, where("categoryId", "==", selectedCategoryId));
+        constraints.push(where("categoryId", "==", selectedCategoryId));
       }
 
       if (selectedSubCategoryId) {
-        q = query(q, where("subCategoryId", "==", selectedSubCategoryId));
+        constraints.push(where("subCategoryId", "==", selectedSubCategoryId));
       }
+
+      let sortField: string;
+      let sortDirection: "asc" | "desc" = "desc";
 
       switch (sortBy) {
         case "newest":
-          q = query(q, orderBy("createdAt", "desc"));
+          sortField = "createdAt";
+          sortDirection = "desc";
           break;
         case "price-asc":
-          q = query(q, orderBy("price", "asc"));
+          sortField = "price";
+          sortDirection = "asc";
           break;
         case "price-desc":
-          q = query(q, orderBy("price", "desc"));
+          sortField = "price";
+          sortDirection = "desc";
           break;
         case "name-asc":
-          q = query(q, orderBy("name", "asc"));
+          sortField = "name";
+          sortDirection = "asc";
           break;
         case "name-desc":
-          q = query(q, orderBy("name", "desc"));
+          sortField = "name";
+          sortDirection = "desc";
           break;
+        default:
+          sortField = "createdAt";
+          sortDirection = "desc";
       }
 
-      q = query(q, limit(PRODUCTS_PER_PAGE));
+      constraints.push(orderBy(sortField, sortDirection));
+      constraints.push(limit(PRODUCTS_PER_PAGE));
 
       if (!reset && lastDoc) {
-        q = query(q, startAfter(lastDoc));
+        constraints.push(startAfter(lastDoc));
       }
 
+      const q = query(productsRef, ...constraints);
       const snapshot = await getDocs(q);
       const productsData = snapshot.docs.map(doc => ({
         id: doc.id,

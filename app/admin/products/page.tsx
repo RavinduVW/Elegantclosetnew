@@ -116,10 +116,20 @@ export default function ProductsPage() {
             Manage your product catalog
           </p>
         </div>
-        <Button onClick={() => router.push("/admin/products/create")}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Product
-        </Button>
+        <div className="flex gap-3">
+          <Button 
+            onClick={() => router.push("/admin/products/quick-create")}
+            variant="outline"
+            className="border-2 border-yellow-300 bg-gradient-to-r from-yellow-50 to-amber-50 hover:from-yellow-100 hover:to-amber-100 text-yellow-900 font-semibold"
+          >
+            <Sparkles className="mr-2 h-4 w-4" />
+            Quick Create
+          </Button>
+          <Button onClick={() => router.push("/admin/products/create")}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Product
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
