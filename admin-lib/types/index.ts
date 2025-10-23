@@ -26,7 +26,7 @@ export interface Product {
   lowStockThreshold?: number;
   allowBackorder: boolean;
 
-  categoryId: string;
+  categoryId?: string;
   subCategoryId?: string;
   secondaryCategories?: string[];
   tags: string[];
