@@ -30,10 +30,29 @@ service cloud.firestore {
     
     // Products collection
     match /products/{productId} {
-      allow read: if true; // Public can read published products
-      allow create: if canWrite();
-      allow update: if canWrite();
+      allow read: if true;
+      allow create: if canWrite() && validateProduct();
+      allow update: if canWrite() && validateProduct();
       allow delete: if canWrite();
+    }
+    
+    function validateProduct() {
+      let data = request.resource.data;
+      return data.name is string && data.name.size() > 0 &&
+             data.sku is string && data.sku.size() > 0 &&
+             data.price is number && data.price > 0 &&
+             data.slug is string && data.slug.size() > 0 &&
+             data.currency is string &&
+             data.status in ['draft', 'published', 'archived'] &&
+             data.visibility in ['public', 'private', 'password'] &&
+             data.colors is list &&
+             data.sizes is list &&
+             data.tags is list &&
+             data.images is list && data.images.size() > 0 &&
+             data.featuredImage is string &&
+             (!('categoryId' in data) || data.categoryId is string) &&
+             (!('subCategoryId' in data) || data.subCategoryId is string) &&
+             (!('salePrice' in data) || (data.salePrice is number && data.salePrice < data.price));
     }
     
     // Categories collection
