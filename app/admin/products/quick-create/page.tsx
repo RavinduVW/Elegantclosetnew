@@ -273,8 +273,8 @@ export default function QuickCreateProductPage() {
                 Category <Badge variant="secondary">Optional</Badge>
               </Label>
               <Select 
-                value={categoryId} 
-                onValueChange={setCategoryId} 
+                value={categoryId || "none"} 
+                onValueChange={(val) => setCategoryId(val === "none" ? "" : val)} 
                 disabled={categoriesLoading}
               >
                 <SelectTrigger className="border-2">
@@ -285,7 +285,7 @@ export default function QuickCreateProductPage() {
                   } />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No Category</SelectItem>
+                  <SelectItem value="none">No Category</SelectItem>
                   {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
                       {cat.name}
