@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { uploadMultipleToUploadME } from "@/lib/uploadme";
+import { uploadMultipleToFirebaseStorage } from "@/lib/firebase-storage";
 import { ArrowLeft, Upload, X, Loader2, Zap, Info } from "lucide-react";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -116,13 +116,13 @@ export default function QuickCreateProductPage() {
     try {
       toast.info(`Uploading ${imageFiles.length} image${imageFiles.length > 1 ? 's' : ''}...`);
       
-      const imageUrls = await uploadMultipleToUploadME(imageFiles, {
-        namePrefix: "products",
+      const uploadResults = await uploadMultipleToFirebaseStorage(imageFiles, {
         folder: "products",
-        quality: 100,
-        preserveOriginal: true,
-        tags: ["product", name || "quick-product"],
+        namePrefix: name.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-'),
+        parallel: true,
       });
+      
+      const imageUrls = uploadResults.map(result => result.data.url);
 
       const mappedImages = imageUrls.map((url, index) => ({
         id: `img-${Date.now()}-${index}`,
