@@ -19,7 +19,7 @@ import { ArrowLeft, Save, Upload, X } from "lucide-react";
 import Link from "next/link";
 import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/backend/config";
-import { uploadToUploadME } from "@/lib/uploadme";
+import { uploadToFirebaseStorage } from "@/lib/firebase-storage";
 import { Category } from "@/admin-lib/types";
 import { toast } from "sonner";
 
@@ -112,17 +112,14 @@ export default function EditCategoryPage() {
     if (!imageFile) return undefined;
 
     try {
-      console.log("Uploading category image to UploadME...");
-      const response = await uploadToUploadME(imageFile, {
-        name: `category-${formData.slug || Date.now()}`,
+      console.log("Uploading category image to Firebase Storage...");
+      const response = await uploadToFirebaseStorage(imageFile, {
         folder: "categories",
-        quality: 100,
-        preserveOriginal: true,
-        tags: ["category", formData.name || "category-image"],
+        customName: `category-${formData.slug || Date.now()}`,
       });
-      console.log("Category image upload response:", response);
-      console.log("Display URL extracted:", response.data.display_url);
-      return response.data.display_url;
+      console.log("Category image uploaded to Firebase Storage:", response);
+      console.log("Download URL:", response.data.url);
+      return response.data.url;
     } catch (error) {
       console.error("Error uploading image:", error);
       toast.error("Failed to upload image: " + (error instanceof Error ? error.message : "Unknown error"));
