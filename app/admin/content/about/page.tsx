@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { collection, addDoc, updateDoc, doc, getDocs, Timestamp, query, limit } from "firebase/firestore";
 import { db } from "@/backend/config";
 import { AboutContent } from "@/admin-lib/types";
-import { uploadToUploadME } from "@/lib/uploadme";
+import { uploadToFirebaseStorage } from "@/lib/firebase-storage";
 import { FileText, Save, Eye, Upload, X, Bold, Italic, List, ListOrdered, Heading1, Heading2, Heading3, Image as ImageIcon, Link as LinkIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -149,18 +149,15 @@ export default function AboutManagementPage() {
 
     try {
       setIsUploading(true);
-      console.log("Uploading about page image...");
-      const response = await uploadToUploadME(file, {
-        name: "about-page",
+      console.log("Uploading about page image to Firebase Storage...");
+      const response = await uploadToFirebaseStorage(file, {
         folder: "content/about",
-        quality: 100,
-        preserveOriginal: true,
-        tags: ["about", "content"],
+        customName: "about-page",
       });
-      console.log("About image uploaded, response:", response);
-      console.log("Display URL extracted:", response.data.display_url);
+      console.log("About image uploaded to Firebase Storage, response:", response);
+      console.log("Download URL:", response.data.url);
       const newImageObj = {
-        url: response.data.display_url,
+        url: response.data.url,
         alt: newImage.alt || file.name,
         caption: newImage.caption || undefined,
       };
