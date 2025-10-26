@@ -156,14 +156,25 @@ export default function EditProductPage() {
   const fetchCategories = async () => {
     try {
       setCategoriesLoading(true);
+      console.log("Fetching categories from Firestore...");
       const categoriesRef = collection(db, "categories");
-      const q = query(categoriesRef, where("parentId", "==", null));
+      const q = query(categoriesRef, where("status", "==", "active"));
       const snapshot = await getDocs(q);
+      console.log(`Found ${snapshot.docs.length} active categories`);
+      
       const categoriesData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Category[];
-      setCategories(categoriesData);
+      
+      const mainCategories = categoriesData.filter(cat => !cat.parentId);
+      console.log(`Filtered to ${mainCategories.length} main categories:`, mainCategories);
+      
+      setCategories(mainCategories);
+      
+      if (mainCategories.length === 0) {
+        toast.info("No categories found. Please create categories first.");
+      }
     } catch (error) {
       console.error("Error fetching categories:", error);
       toast.error("Failed to load categories");
