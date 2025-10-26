@@ -2,48 +2,59 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     
-    // Helper function to check if user is an admin
     function isAdmin() {
       return request.auth != null && 
              firestore.exists(/databases/(default)/documents/admin_users/$(request.auth.uid)) &&
              firestore.get(/databases/(default)/documents/admin_users/$(request.auth.uid)).data.active == true;
     }
     
-    // Product images
+    function isValidImageSize(maxSizeMB) {
+      return request.resource.size < maxSizeMB * 1024 * 1024;
+    }
+    
+    function isValidImageType() {
+      return request.resource.contentType.matches('image/(jpeg|jpg|png|gif|webp|svg\\+xml|bmp|avif|heic|heif)');
+    }
+    
+    function hasValidFilename() {
+      return request.resource.name.size() > 0 && 
+             request.resource.name.size() < 256;
+    }
+    
+    function isValidUpload(maxSizeMB) {
+      return isAdmin() && 
+             isValidImageSize(maxSizeMB) && 
+             isValidImageType() && 
+             hasValidFilename();
+    }
+    
     match /products/{allPaths=**} {
-      allow read: if true; // Public can view product images
-      allow write: if isAdmin() && 
-                   request.resource.size < 5 * 1024 * 1024 && // 5MB max
-                   request.resource.contentType.matches('image/.*');
+      allow read: if true;
+      allow write, delete: if isValidUpload(50);
     }
     
-    // Media library
     match /media/{allPaths=**} {
-      allow read: if true; // Public can view media
-      allow write: if isAdmin() && 
-                   request.resource.size < 10 * 1024 * 1024; // 10MB max
+      allow read: if true;
+      allow write, delete: if isValidUpload(50);
     }
     
-    // Content images (homepage, pages, etc.)
     match /content/{allPaths=**} {
-      allow read: if true; // Public can view content images
-      allow write: if isAdmin() && 
-                   request.resource.size < 10 * 1024 * 1024; // 10MB max
+      allow read: if true;
+      allow write, delete: if isValidUpload(50);
     }
     
-    // Category images
     match /categories/{allPaths=**} {
-      allow read: if true; // Public can view category images
-      allow write: if isAdmin() && 
-                   request.resource.size < 5 * 1024 * 1024 && // 5MB max
-                   request.resource.contentType.matches('image/.*');
+      allow read: if true;
+      allow write, delete: if isValidUpload(10);
     }
     
-    // Site assets (logos, favicons, etc.)
     match /site/{allPaths=**} {
-      allow read: if true; // Public can view site assets
-      allow write: if isAdmin() && 
-                   request.resource.size < 5 * 1024 * 1024; // 5MB max
+      allow read: if true;
+      allow write, delete: if isValidUpload(10);
+    }
+    
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }
