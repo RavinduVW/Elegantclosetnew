@@ -34,6 +34,7 @@ interface MediaImage {
   productName: string;
   order: number;
   isFeatured: boolean;
+  source: "firebase" | "legacy";
 }
 
 export default function MediaPage() {
@@ -75,6 +76,8 @@ export default function MediaPage() {
         
         if (product.images && product.images.length > 0) {
           product.images.forEach((image) => {
+            const isFirebaseStorage = image.url.includes('firebasestorage.googleapis.com');
+            
             allImages.push({
               id: image.id,
               url: image.url,
@@ -83,6 +86,7 @@ export default function MediaPage() {
               productName: product.name,
               order: image.order,
               isFeatured: product.featuredImage === image.url,
+              source: isFirebaseStorage ? "firebase" : "legacy",
             });
           });
         }
@@ -150,6 +154,8 @@ export default function MediaPage() {
     total: images.length,
     featured: images.filter((img) => img.isFeatured).length,
     products: new Set(images.map((img) => img.productId)).size,
+    firebase: images.filter((img) => img.source === "firebase").length,
+    legacy: images.filter((img) => img.source === "legacy").length,
   };
 
   return (
@@ -158,7 +164,7 @@ export default function MediaPage() {
         <div>
           <h1 className="text-3xl font-bold">Media Library</h1>
           <p className="text-muted-foreground">
-            All images hosted on ImageBB from your products
+            All images from Firebase Storage and legacy sources
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -168,6 +174,14 @@ export default function MediaPage() {
           <Badge variant="outline" className="text-sm">
             {stats.products} Products
           </Badge>
+          <Badge variant="default" className="text-sm bg-gradient-to-r from-purple-600 to-pink-600">
+            {stats.firebase} Firebase
+          </Badge>
+          {stats.legacy > 0 && (
+            <Badge variant="outline" className="text-sm">
+              {stats.legacy} Legacy
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -293,11 +307,22 @@ export default function MediaPage() {
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                     />
 
-                    {image.isFeatured && (
-                      <Badge className="absolute top-2 left-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 z-10">
-                        Featured
-                      </Badge>
-                    )}
+                    <div className="absolute top-2 left-2 flex gap-2 z-10">
+                      {image.isFeatured && (
+                        <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0">
+                          Featured
+                        </Badge>
+                      )}
+                      {image.source === "firebase" ? (
+                        <Badge className="bg-green-600 text-white border-0">
+                          Firebase
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-white/80 border-amber-500 text-amber-700">
+                          Legacy
+                        </Badge>
+                      )}
+                    </div>
 
                     <AnimatePresence>
                       {hoveredImage === image.id && (
