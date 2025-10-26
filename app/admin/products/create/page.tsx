@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import MDEditor from "@uiw/react-md-editor";
-import { uploadMultipleToUploadME } from "@/lib/uploadme";
+import { uploadMultipleToFirebaseStorage } from "@/lib/firebase-storage";
 import { PREDEFINED_COLORS, getAllColorNames } from "@/lib/colors";
 import { getAllSizeCodes, sortSizes } from "@/lib/sizes";
 import { ArrowLeft, Upload, X, Loader2, Sparkles, TrendingUp, Award, Clock } from "lucide-react";
@@ -240,17 +240,17 @@ export default function CreateProductPage() {
     setLoading(true);
 
     try {
-      console.log(`Uploading ${imageFiles.length} images to UploadME...`);
+      console.log(`Uploading ${imageFiles.length} images to Firebase Storage...`);
       toast.info(`Uploading ${imageFiles.length} image${imageFiles.length > 1 ? 's' : ''}...`);
       
-      const imageUrls = await uploadMultipleToUploadME(imageFiles, {
-        namePrefix: "products",
+      const uploadResults = await uploadMultipleToFirebaseStorage(imageFiles, {
         folder: "products",
-        quality: 100,
-        preserveOriginal: true,
-        tags: ["product", name || "product-image"],
+        namePrefix: name.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-'),
+        parallel: true,
       });
-      console.log("Images uploaded successfully:", imageUrls);
+      
+      const imageUrls = uploadResults.map(result => result.data.url);
+      console.log("Images uploaded successfully to Firebase Storage:", imageUrls);
       console.log("Number of URLs:", imageUrls.length);
       console.log("First URL:", imageUrls[0]);
 
