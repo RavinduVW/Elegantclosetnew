@@ -53,16 +53,7 @@ export default function CategoryFilter({
       <Label className="text-sm font-semibold text-gray-900">Categories</Label>
       
       <div className="space-y-1">
-        <button
-          onClick={() => onCategoryChange(null, null)}
-          className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-            !selectedCategoryId
-              ? "bg-purple-50 text-purple-700 font-medium"
-              : "hover:bg-gray-50 text-gray-700"
-          }`}
-        >
-          All Products
-        </button>
+        
 
         {categories.map((category) => {
           const isExpanded = expandedCategories.has(category.id);
