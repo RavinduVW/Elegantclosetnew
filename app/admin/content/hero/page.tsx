@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/backend/config";
 import { HeroSettings, HeroImage, HeroGridImage } from "@/admin-lib/types";
-import { uploadToUploadME, uploadMultipleToUploadME } from "@/lib/uploadme";
+import { uploadToFirebaseStorage, uploadMultipleToFirebaseStorage } from "@/lib/firebase-storage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -121,15 +121,15 @@ export default function HeroManagementPage() {
 
     try {
       setUploadingCarousel(true);
-      console.log(`Uploading ${files.length} carousel images...`);
-      const uploadedUrls = await uploadMultipleToUploadME(Array.from(files), {
-        namePrefix: "hero-carousel",
+      console.log(`Uploading ${files.length} carousel images to Firebase Storage...`);
+      const uploadResults = await uploadMultipleToFirebaseStorage(Array.from(files), {
         folder: "content/hero",
-        quality: 100,
-        preserveOriginal: true,
-        tags: ["hero", "carousel"],
+        namePrefix: "hero-carousel",
+        parallel: true,
       });
-      console.log("Carousel images uploaded, URLs received:", uploadedUrls);
+      
+      const uploadedUrls = uploadResults.map(result => result.data.url);
+      console.log("Carousel images uploaded to Firebase Storage, URLs received:", uploadedUrls);
       
       const newImages: HeroImage[] = uploadedUrls.map((url: string, index: number) => ({
         id: `carousel-${Date.now()}-${index}`,
@@ -162,20 +162,17 @@ export default function HeroManagementPage() {
 
     try {
       setUploadingGrid(position);
-      console.log(`Uploading grid image ${position}...`);
-      const response = await uploadToUploadME(file, {
-        name: `hero-grid-${position}`,
+      console.log(`Uploading grid image ${position} to Firebase Storage...`);
+      const response = await uploadToFirebaseStorage(file, {
         folder: "content/hero",
-        quality: 100,
-        preserveOriginal: true,
-        tags: ["hero", "grid", `position-${position}`],
+        customName: `hero-grid-${position}`,
       });
-      console.log("Grid image uploaded, response:", response);
-      console.log("Display URL extracted:", response.data.display_url);
+      console.log("Grid image uploaded to Firebase Storage, response:", response);
+      console.log("Download URL:", response.data.url);
       
       const newImage: HeroGridImage = {
         id: `grid-${position}-${Date.now()}`,
-        url: response.data.display_url,
+        url: response.data.url,
         alt: `Hero grid image ${position}`,
         position
       };
