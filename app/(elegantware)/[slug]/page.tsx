@@ -44,7 +44,7 @@ export default function CategoryPage() {
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string | null>(null);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
   const [showSaleOnly, setShowSaleOnly] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [gridCols, setGridCols] = useState<2 | 3 | 4>(3);
@@ -198,7 +198,7 @@ export default function CategoryPage() {
     setSelectedSubCategoryId(null);
     setSelectedColors([]);
     setSelectedSizes([]);
-    setPriceRange([0, 50000]);
+    setPriceRange([0, 500000]);
     setShowSaleOnly(false);
   };
 
@@ -207,7 +207,7 @@ export default function CategoryPage() {
     selectedColors.length +
     selectedSizes.length +
     (showSaleOnly ? 1 : 0) +
-    (priceRange[0] > 0 || priceRange[1] < 50000 ? 1 : 0);
+    (priceRange[0] > 0 || priceRange[1] < 500000 ? 1 : 0);
 
   const FiltersContent = () => (
     <div className="space-y-6">
@@ -255,7 +255,7 @@ export default function CategoryPage() {
         <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border-2 border-purple-200 p-4">
           <PriceRangeFilter
             min={0}
-            max={50000}
+            max={500000}
             value={priceRange}
             onChange={setPriceRange}
             currency={currency}
