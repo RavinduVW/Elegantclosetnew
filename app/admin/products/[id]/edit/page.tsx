@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { doc, getDoc, updateDoc, serverTimestamp, collection, getDocs, query, where } from "firebase/firestore";
+import { doc, getDoc, updateDoc, setDoc, serverTimestamp, collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "@/backend/config";
 import type { Product, Category } from "@/admin-lib/types";
 import { Button } from "@/components/ui/button";
@@ -308,48 +308,57 @@ export default function EditProductPage() {
       }
 
       const productData: Partial<Product> = {
-        name,
-        slug,
-        description: description && description.trim() !== "" ? description : "",
-        markdownDescription: markdownDescription && markdownDescription.trim() !== "" ? markdownDescription : undefined,
-        shortDescription: shortDescription && shortDescription.trim() !== "" ? shortDescription : undefined,
-        introduction: introduction && introduction.trim() !== "" ? introduction : undefined,
-        sku,
-        price: parseFloat(price),
-        salePrice: salePrice && salePrice.trim() !== "" ? parseFloat(salePrice) : undefined,
-        discountPercentage: discountPercentage || undefined,
-        currency: "LKR",
-        inStock,
-        isSoldOut,
-        stockQuantity: stockQuantity && stockQuantity.trim() !== "" ? parseInt(stockQuantity) : undefined,
-        lowStockThreshold: lowStockThreshold && lowStockThreshold.trim() !== "" ? parseInt(lowStockThreshold) : undefined,
-        allowBackorder,
-        categoryId: categoryId && categoryId.trim() !== "" ? categoryId : undefined,
-        subCategoryId: subCategoryId && subCategoryId.trim() !== "" ? subCategoryId : undefined,
-        tags: tags && tags.trim() !== "" ? tags.split(",").map(t => t.trim()).filter(Boolean) : [],
-        colors: selectedColors,
-        sizes: sortSizes(sizesArray),
-        customSizes: customSizes && customSizes.trim() !== "" ? customSizes.split(",").map(s => s.trim()).filter(Boolean) : undefined,
-        material: material && material.trim() !== "" ? material : undefined,
-        brand: brand && brand.trim() !== "" ? brand : undefined,
-        images: allImages,
-        featuredImage: allImages[0]?.url,
-        status,
-        featured,
-        specialTag: specialTag || undefined,
-        visibility,
-        seoTitle: seoTitle && seoTitle.trim() !== "" ? seoTitle : undefined,
-        seoDescription: seoDescription && seoDescription.trim() !== "" ? seoDescription : undefined,
-        seoKeywords: seoKeywords && seoKeywords.trim() !== "" ? seoKeywords.split(",").map(k => k.trim()).filter(Boolean) : undefined,
-        updatedAt: serverTimestamp() as any,
-      };
+  // REQUIRED fields (always include)
+  name,
+  slug,
+  description: description.trim() || "",
+  sku,
+  price: parseFloat(price),
+  currency: "LKR",
+  inStock,
+  isSoldOut,
+  status,
+  featured,
+  visibility,
+  colors: selectedColors,
+  sizes: sortSizes(sizesArray),
+  tags: tags && tags.trim() !== "" ? tags.split(",").map(t => t.trim()).filter(Boolean) : [],
+  images: allImages,
+  featuredImage: allImages[0]?.url,
+  
+  // OPTIONAL fields (only include if they have values)
+  ...(introduction && introduction.trim() !== "" && { introduction }),
+  ...(markdownDescription && markdownDescription.trim() !== "" && { markdownDescription }),
+  ...(shortDescription && shortDescription.trim() !== "" && { shortDescription }),
+  /// Only include salePrice if it has a VALID value
+...(salePrice?.trim() !== "" && parseFloat(salePrice) < parseFloat(price) && { 
+  salePrice: parseFloat(salePrice) 
+}),
+
+  ...(discountPercentage && { discountPercentage }),
+  ...(stockQuantity && stockQuantity.trim() !== "" && { stockQuantity: parseInt(stockQuantity) }),
+  ...(lowStockThreshold && lowStockThreshold.trim() !== "" && { lowStockThreshold: parseInt(lowStockThreshold) }),
+  ...(categoryId && categoryId.trim() !== "" && { categoryId }),
+  ...(subCategoryId && subCategoryId.trim() !== "" && { subCategoryId }),
+  ...(customSizes && customSizes.trim() !== "" && { customSizes: customSizes.split(",").map(s => s.trim()).filter(Boolean) }),
+  ...(material && material.trim() !== "" && { material }),
+  ...(brand && brand.trim() !== "" && { brand }),
+  ...(seoTitle && seoTitle.trim() !== "" && { seoTitle }),
+  ...(seoDescription && seoDescription.trim() !== "" && { seoDescription }),
+  ...(seoKeywords && seoKeywords.trim() !== "" && { seoKeywords: seoKeywords.split(",").map(k => k.trim()).filter(Boolean) }),
+  ...(specialTag && { specialTag }),
+  allowBackorder,
+  
+  updatedAt: serverTimestamp() as any,
+};
+
 
       if (status === "published" && !existingImages.length) {
         productData.publishedAt = serverTimestamp() as any;
       }
 
       console.log("Updating product in Firestore...", productData);
-      await updateDoc(doc(db, "products", productId), productData);
+      await setDoc(doc(db, "products", productId), productData, { merge: true });
       console.log("Product updated successfully");
 
       toast.success("Product updated successfully!");
@@ -506,16 +515,31 @@ export default function EditProductPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="salePrice">Sale Price (LKR) (Optional)</Label>
-                <Input
-                  id="salePrice"
-                  type="number"
-                  step="0.01"
-                  value={salePrice}
-                  onChange={(e) => setSalePrice(e.target.value)}
-                  placeholder="Leave empty if no sale"
-                />
-              </div>
+  <Label htmlFor="salePrice">Sale Price (LKR) (Optional)</Label>
+  <Input
+    id="salePrice"
+    type="number"
+    step="0.01"
+    value={salePrice}
+    onChange={(e) => setSalePrice(e.target.value)}
+    placeholder="Leave empty if no sale"
+  />
+  <Button 
+  type="button" 
+  variant="outline" 
+  size="sm" 
+  onClick={() => {
+    setSalePrice("");
+    setDiscountPercentage(null);
+  }}
+  className="mt-2 w-full border-red-300 hover:bg-red-50"
+>
+  ❌ Clear Sale Price
+</Button>
+
+
+</div>
+
 
               {discountPercentage && (
                 <div className="space-y-2">

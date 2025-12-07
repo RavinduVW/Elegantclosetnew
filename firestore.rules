@@ -37,23 +37,38 @@ service cloud.firestore {
     }
     
     function validateProduct() {
-      let data = request.resource.data;
-      return data.name is string && data.name.size() > 0 &&
-             data.sku is string && data.sku.size() > 0 &&
-             data.price is number && data.price > 0 &&
-             data.slug is string && data.slug.size() > 0 &&
-             data.currency is string &&
-             data.status in ['draft', 'published', 'archived'] &&
-             data.visibility in ['public', 'private', 'password'] &&
-             data.colors is list &&
-             data.sizes is list &&
-             data.tags is list &&
-             data.images is list && data.images.size() > 0 &&
-             data.featuredImage is string &&
-             (!('categoryId' in data) || data.categoryId is string) &&
-             (!('subCategoryId' in data) || data.subCategoryId is string) &&
-             (!('salePrice' in data) || (data.salePrice is number && data.salePrice < data.price));
-    }
+  let data = request.resource.data;
+  return data.name is string && data.name.size() > 0 &&
+         data.sku is string && data.sku.size() > 0 &&
+         data.price is number && data.price > 0 &&
+         data.slug is string && data.slug.size() > 0 &&
+         data.currency is string &&
+         data.status in ['draft', 'published', 'archived'] &&
+         data.visibility in ['public', 'private', 'password'] &&
+         data.colors is list && data.colors.size() > 0 &&
+         data.sizes is list && data.sizes.size() > 0 &&
+         data.tags is list &&
+         data.images is list && data.images.size() > 0 &&
+         data.featuredImage is string &&
+         // Make optional fields truly optional
+         (!('salePrice' in data) || (data.salePrice is number && data.salePrice < data.price)) &&
+         (!('markdownDescription' in data) || data.markdownDescription is string) &&
+         (!('shortDescription' in data) || data.shortDescription is string) &&
+         (!('introduction' in data) || data.introduction is string) &&
+         (!('categoryId' in data) || data.categoryId is string) &&
+         (!('subCategoryId' in data) || data.subCategoryId is string) &&
+         (!('customSizes' in data) || data.customSizes is list) &&
+         (!('material' in data) || data.material is string) &&
+         (!('brand' in data) || data.brand is string) &&
+         (!('discountPercentage' in data) || data.discountPercentage is number) &&
+         (!('stockQuantity' in data) || data.stockQuantity is number) &&
+         (!('lowStockThreshold' in data) || data.lowStockThreshold is number) &&
+         (!('seoTitle' in data) || data.seoTitle is string) &&
+         (!('seoDescription' in data) || data.seoDescription is string) &&
+         (!('seoKeywords' in data) || data.seoKeywords is list) &&
+         (!('specialTag' in data) || data.specialTag in ['new', 'trending', 'bestseller', 'limited']);
+}
+
     
     // Categories collection
     match /categories/{categoryId} {
