@@ -219,6 +219,17 @@ export default function ShopPage() {
     return Array.from(sizesSet);
   }, [products]);
 
+// Add this EXACTLY here (after availableSizes useMemo)
+const categoriesWithCounts = useMemo(() => {
+  return categories.map(category => {
+    const count = filteredProducts.filter(p => 
+      p.categoryId === category.id
+    ).length;
+    return { ...category, productCount: count };
+  });
+}, [categories, filteredProducts]);
+
+
   const handleCategoryChange = (categoryId: string | null, subCategoryId: string | null) => {
     setSelectedCategoryId(categoryId);
     setSelectedSubCategoryId(subCategoryId);
@@ -246,11 +257,12 @@ export default function ShopPage() {
     <div className="space-y-6">
       <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border-2 border-purple-200 p-4">
         <CategoryFilter
-          categories={categories}
-          selectedCategoryId={selectedCategoryId}
-          selectedSubCategoryId={selectedSubCategoryId}
-          onCategoryChange={handleCategoryChange}
-        />
+  categories={categoriesWithCounts}  // ← USE THIS INSTEAD
+  selectedCategoryId={selectedCategoryId}
+  selectedSubCategoryId={selectedSubCategoryId}
+  onCategoryChange={handleCategoryChange}
+/>
+
       </div>
 
       <div className="border-t-2 border-purple-100 pt-6">
