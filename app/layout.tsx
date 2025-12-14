@@ -8,6 +8,8 @@ import Header from "./components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import SnowCanvas from './components/SnowCanvas';  // ← ADD THIS LINE
+
 
 
 export const metadata: Metadata = {
@@ -72,6 +74,7 @@ export default function RootLayout({
       <body>
         <ErrorBoundary>
           <Header />
+          <SnowCanvas />  
           {children}
           <Footer />
           <WhatsAppButton />
