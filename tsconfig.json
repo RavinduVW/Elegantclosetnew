@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-  ],
+, "app/components/SnowCanvas.jsx"  ],
   "exclude": [
     "node_modules"
   ]

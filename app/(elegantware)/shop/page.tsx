@@ -61,10 +61,29 @@ export default function ShopPage() {
   const [currency, setCurrency] = useState<string>("LKR");
   
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [totalProductsCount, setTotalProductsCount] = useState(0);
+
 
   useEffect(() => {
     fetchCategories();
   }, []);
+  useEffect(() => {
+  fetchTotalProductsCount();
+}, []);
+
+const fetchTotalProductsCount = async () => {
+  try {
+    const totalQuery = query(
+      collection(db, "products"), 
+      where("status", "==", "published")
+    );
+    const snapshot = await getDocs(totalQuery);
+    setTotalProductsCount(snapshot.size);
+  } catch (error) {
+    console.error("Error fetching total count:", error);
+  }
+};
+
 
   useEffect(() => {
     fetchProducts(true);
@@ -385,8 +404,9 @@ const categoriesWithCounts = useMemo(() => {
                 </Sheet>
 
                 <p className="text-sm text-gray-600">
-                  {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
-                </p>
+  {filteredProducts.length} of {totalProductsCount} {filteredProducts.length === 1 ? 'product' : 'products'}
+</p>
+
               </div>
 
               <div className="flex items-center gap-3">
