@@ -565,20 +565,17 @@ Please confirm availability and provide payment details. Thank you!`;
               </p>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 p-4 bg-purple-50 rounded-xl">
-              <div className="flex flex-col items-center text-center">
-                <Truck className="w-5 h-5 text-purple-600 mb-1" />
-                <p className="text-xs font-medium text-gray-900">Fast Shipping</p>
-              </div>
-              <div className="flex flex-col items-center text-center">
-                <Shield className="w-5 h-5 text-purple-600 mb-1" />
-                <p className="text-xs font-medium text-gray-900">Authentic</p>
-              </div>
-              <div className="flex flex-col items-center text-center">
-                <Package className="w-5 h-5 text-purple-600 mb-1" />
-                <p className="text-xs font-medium text-gray-900">Easy Returns</p>
-              </div>
-            </div>
+            <div className="grid grid-cols-2 gap-6 p-4 bg-purple-50 rounded-xl">
+  <div className="flex flex-col items-center text-center">
+    <Truck className="w-5 h-5 text-purple-600 mb-1" />
+    <p className="text-xs font-medium text-gray-900">Fast Shipping</p>
+  </div>
+  <div className="flex flex-col items-center text-center">
+    <Shield className="w-5 h-5 text-purple-600 mb-1" />
+    <p className="text-xs font-medium text-gray-900">Authentic</p>
+  </div>
+</div>
+
 
             {product.material && (
               <div className="p-4 bg-gray-50 rounded-xl">
