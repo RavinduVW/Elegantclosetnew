@@ -91,8 +91,14 @@ export default function Home() {
         ...doc.data()
       })) as Product[];
 
-      const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
-      setRandomProducts(shuffled.slice(0, 8));
+      // Show featured products first
+const featuredProducts = allProducts.filter(p => p.featured === true);
+if (featuredProducts.length > 0) {
+  setRandomProducts(featuredProducts.slice(0, 8));
+} else {
+  const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
+  setRandomProducts(shuffled.slice(0, 8));
+}
 
       const productsWithSale = allProducts.filter(p => p.salePrice && p.salePrice < p.price);
       setSaleProducts(productsWithSale.slice(0, 6));
