@@ -57,7 +57,8 @@ export default function ShopPage() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
   const [showSaleOnly, setShowSaleOnly] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("newest");
-  const [gridCols, setGridCols] = useState<2 | 3 | 4>(2);
+  const [gridCols, setGridCols] = useState<2 | 3 | 4>(3);
+
   const [currency, setCurrency] = useState<string>("LKR");
   
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -467,7 +468,11 @@ const categoriesWithCounts = useMemo(() => {
             </div>
 
             {loading ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <div className={`grid gap-6 ${
+  gridCols === 2 ? 'grid-cols-2 sm:grid-cols-2' :
+  gridCols === 3 ? 'grid-cols-2 md:grid-cols-3' :
+  'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+}`}>
 
                 {Array.from({ length: PRODUCTS_PER_PAGE }).map((_, i) => (
                   <div key={i} className="space-y-3">
@@ -502,7 +507,11 @@ const categoriesWithCounts = useMemo(() => {
               <>
                 <motion.div
   layout
-  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+  className={`grid gap-6 ${
+    gridCols === 2 ? 'grid-cols-2 sm:grid-cols-2' :
+    gridCols === 3 ? 'grid-cols-2 md:grid-cols-3' :
+    'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+  }`}
 >
 
                   <AnimatePresence mode="popLayout">
