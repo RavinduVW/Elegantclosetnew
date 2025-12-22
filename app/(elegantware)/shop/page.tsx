@@ -239,15 +239,31 @@ const fetchTotalProductsCount = async () => {
     return Array.from(sizesSet);
   }, [products]);
 
-// Add this EXACTLY here (after availableSizes useMemo)
-const categoriesWithCounts = useMemo(() => {
-  return categories.map(category => {
-    const count = filteredProducts.filter(p => 
-      p.categoryId === category.id
-    ).length;
-    return { ...category, productCount: count };
-  });
-}, [categories, filteredProducts]);
+const [categoriesWithCounts, setCategoriesWithCounts] = useState<Category[]>([]);
+
+useEffect(() => {
+  const fetchCategoryCounts = async () => {
+    const counts = await Promise.all(
+      categories.map(async (category) => {
+        const q = query(
+          collection(db, "products"),
+          where("status", "==", "published"),
+          where("categoryId", "==", category.id)
+        );
+        const snapshot = await getDocs(q);
+        return { ...category, productCount: snapshot.size };
+      })
+    );
+    setCategoriesWithCounts(counts);
+  };
+
+  if (categories.length > 0) {
+    fetchCategoryCounts();
+  }
+}, [categories]);
+
+
+
 
 
   const handleCategoryChange = (categoryId: string | null, subCategoryId: string | null) => {
