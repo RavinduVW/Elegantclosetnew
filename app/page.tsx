@@ -83,7 +83,7 @@ export default function Home() {
         collection(db, "products"),
         where("status", "==", "published"),
         where("inStock", "==", true),
-        limit(50)
+        limit(250)
       );
       const productsSnapshot = await getDocs(productsQuery);
       const allProducts = productsSnapshot.docs.map(doc => ({
